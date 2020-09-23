@@ -119,7 +119,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-AUTH_USER_MODEL = 'Users.Patient'
+AUTH_USER_MODEL = 'Users.User'
 LOGIN_URL = '/Users/login'
 
 EMAIL_USE_TLS = True
