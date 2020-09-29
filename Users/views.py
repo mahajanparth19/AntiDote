@@ -5,17 +5,49 @@ from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
-from .models import User,Patient,Doctor
-
+from .models import User,Patient,Doctor,Reports,Treatment
+from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient
+from .utils import send_email
 from django.contrib.sites.shortcuts import get_current_site
+
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.template.loader import render_to_string
 from .token import account_activation_token
-from django.core.mail import EmailMessage
 
 
 # Create your views here.
+def View_Treatment(request):
+    Treatments = Treatment.objects.filter(Patient=request.user.Patient)
+    return render(request, 'Users/Treat.html',{
+        'Treatments' : Treatments
+    })    
+
+
+def showfile(request):
+    # lastfile = request.user.Patient.Reports
+    form = FileForm(request.POST or None, request.FILES or None)
+    if form.is_valid():
+        form.save(request.user) #replace by patient
+        
+    lastfile= Reports.objects.filter(Patient=request.user.Patient)
+    context = None
+    if lastfile:
+        context= {
+              'form': form,
+              'lastfile' : lastfile,
+              'Send' : send_to_doc_Form,
+              }
+
+    if not context:
+        context = {
+            'form': form,
+            'Send' : send_to_doc_Form,
+        }
+  
+    return render(request, 'Users/files.html', context)
+
+
+
 def index(request):
      return render(request, "Users/index.html",)
 
@@ -40,7 +72,7 @@ def login_view(request):
         return render(request, "Users/login.html")
 
 
-@login_required()
+
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
@@ -49,40 +81,32 @@ def logout_view(request):
 def register(request):
     if request.method == "POST":
         email = request.POST["email"]
-        name = request.POST["Name"]
-        age = request.POST["Age"]
-        gender = request.POST["Gender"]
-        address = request.POST["Address"]
-
+        form = Register_Patient(request.POST)
         # Ensure password matches confirmation
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
         if password != confirmation:
             return render(request, "Users/register.html", {
-                "message": "Passwords must match."
+                "message": "Passwords must match.",
+                "form" : form
+            })
+        if not form.is_valid():
+            return render(request, "Users/register.html",{
+                "form" : form
             })
 
         # Attempt to create new user
         try:
-            user = User.objects.create_user(email, password,is_active = False,is_patient = True)
+            user = User.objects.create_user(email, password,is_active = True,is_patient = True)
             user.save()
-            p = Patient.objects.create(user = user,Name = name, Age = age,Gender =  gender,Address =  address)
+            p = form.save(commit=False)
+            p.user = user
+            p.save()
             current_site = get_current_site(request)
-            mail_subject = 'Activate your account.'
-            message = render_to_string('Users/acc_active_email.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'uid':urlsafe_base64_encode(force_bytes(user.pk)),
-                'token':account_activation_token.make_token(user),
-            })
-            to_email = email
-            email = EmailMessage(
-                        mail_subject, message, to=[to_email]
-            )
-            email.send()
+            send_email(current_site,user,p.Name)
             return render(request, "Users/confirmation.html",{
                 "message" : "Confirm your email",
-                "Email" : email 
+                "user" : user,
             })
         except IntegrityError:
             return render(request, "Users/register.html", {
@@ -91,58 +115,53 @@ def register(request):
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
     else:
-        return render(request, "Users/register.html")
+        form = Register_Patient()
+        return render(request, "Users/register.html",{
+            "form" : form
+        })
 
 
 def register_Doctor(request):
     if request.method == "POST":
+        form = Register_Doc(request.POST)
         email = request.POST["email"]
-        name = request.POST["Name"]
-        age = request.POST["Age"]
-        gender = request.POST["Gender"]
-        address = request.POST["Address"]
-        Specialization = request.POST["Specialization"]
-        contact = request.POST["contact"]
-        Qualification = request.POST["Qualification"]
-
         # Ensure password matches confirmation
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
         if password != confirmation:
             return render(request, "Users/registerDoctor.html", {
-                "message": "Passwords must match."
+                "message": "Passwords must match.",
+                "form" : form
             })
+        if not form.is_valid():
+            return render(request,"Users/registerDoctor.html",{
+                 "form" : form
+                 })
 
         # Attempt to create new user
         try:
-            user = User.objects.create_user(email, password,is_active = False,is_doctor = True)
-            d = Doctor.objects.create(user = user,Name = name, Age = age,Gender =  gender,Address =  address,Specialization=Specialization,contact=contact,Qualification=Qualification)
+            user = User.objects.create_user(email, password,is_active = True,is_doctor = True)
             user.save()
+            d = form.save(commit=False)
+            d.user = user
+            d.save()
             current_site = get_current_site(request)
-            mail_subject = 'Activate your account.'
-            message = render_to_string('Users/acc_active_email.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'uid':urlsafe_base64_encode(force_bytes(user.pk)),
-                'token':account_activation_token.make_token(user),
-            })
-            to_email = email
-            email_sender = EmailMessage(
-                        mail_subject, message, to=[to_email]
-            )
-            email_sender.send()
+            send_email(current_site,user,d.Name)
             return render(request, "Users/confirmation.html",{
                 "message" : "Confirm your email",
-                "Email" : email  
+                "user" : user,
             })
         except IntegrityError:
             return render(request, "Users/registerDoctor.html", {
-                "message": "Username already taken."
+                "message": "Username already taken.",
+                "form" : form
             })
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
-    else:
-        return render(request, "Users/registerDoctor.html")
+    form = Register_Doc()
+    return render(request,"Users/registerDoctor.html",{
+        "form" : form
+    })
 
 def activate(request, uidb64, token):
     try:
