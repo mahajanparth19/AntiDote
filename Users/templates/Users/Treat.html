@@ -1,0 +1,12 @@
+{% extends "Users/layout.html" %}
+
+{% block body %}
+    <br><br>
+    <h1>Here</h1>
+    {% for Treat in Treatments %}
+        <h3>{{ Treat.Patient.Name }} and {{ Treat.Doctor.Name }}</h3>
+    {% endfor %}
+    <br><br>
+    </p>
+
+{% endblock %}

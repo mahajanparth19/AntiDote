@@ -1,0 +1,15 @@
+{% extends "Users/layout.html" %}
+
+{% block body %}
+    <h2 class="heading">Homepage</h2>
+    {% if user.is_authenticated %}
+        Signed in as <strong>{{ user.Name }}</strong>.
+        {% if user.is_doctor %}
+            <h4>Hi Doctor</h4>
+            <h3>Hi {{ user.Doctor.Name }}</h3>
+        {% elif user.is_patient %}
+            <h4>Hi patient</h4>
+        {% endif %}
+    {% endif %}
+    
+{% endblock %}
