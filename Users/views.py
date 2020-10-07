@@ -28,22 +28,27 @@ def showfile(request):
     form = FileForm(request.POST or None, request.FILES or None)
     if form.is_valid():
         form.save(request.user) #replace by patient
-        
+
     lastfile= Reports.objects.filter(Patient=request.user.Patient)
+
+    send_form = send_to_doc_Form(request.user.Patient)
+    # treat = Treatment.objects.filter(Patient=request.user.Patient)
+    # send_form.fields['Doctors'].queryset = (doc.Doctor for doc in treat )
+
     context = None
     if lastfile:
         context= {
               'form': form,
               'lastfile' : lastfile,
-              'Send' : send_to_doc_Form,
+              'Send' : send_form,
               }
 
     if not context:
         context = {
             'form': form,
-            'Send' : send_to_doc_Form,
+            'Send' : send_form,
         }
-  
+    print(context)
     return render(request, 'Users/files.html', context)
 
 

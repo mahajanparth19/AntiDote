@@ -11,7 +11,11 @@
         <h1>Auctions</h1>
         <div>
             {% if user.is_authenticated %}
-                Signed in as <strong>{{ user.Name }}</strong>.
+                {% if user.is_patient %}
+                    Signed in as <strong>{{ user.Patient.Name }}</strong>.
+                {% else %}
+                    Signed in as <strong>{{ user.Doctor.Name }}</strong>.
+                {% endif %}
             {% else %}
                 Not signed in.
             {% endif %}
@@ -21,12 +25,16 @@
                 <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
             </li>
             {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'reports' %}">Reports</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'View_Treatment' %}">Treatments</a>
-                </li>
+                {% if user.is_patient %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'reports' %}">Reports</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'View_Treatment' %}">Treatments</a>
+                    </li>
+                {% elif user.is_doctor %}
+                    
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
                 </li>

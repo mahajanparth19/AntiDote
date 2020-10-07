@@ -15,6 +15,13 @@
         <form enctype="multipart/form-data" method="POST" action="">
             {% csrf_token %}
             {{ Send.as_p }}
+            {% for doctor in file.Doctors.all %}
+                <h3>{{doctor.id}}</h3>
+            {% endfor%}
+            {% for val,text in Send.Doctors.field.choices %}
+                <input type="checkbox" {% if val not in file.Doctors.all %} checked {% endif %} name="{{text}}" value="{{val}}" >
+                <label for="{{text}}"> {{text}} </label><br>
+            {% endfor %}
             <input type="submit" value="Upload"/>
         </form>
     {% endfor %}

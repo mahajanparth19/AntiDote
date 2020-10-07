@@ -32,11 +32,12 @@ class send_to_doc_Form(forms.ModelForm):
         model= Reports
         fields = ["Doctors"]
     
-#     def __init__ (self, *args, **kwargs,Patient):
-#         Patient = self.Patient
-#         super(send_to_doc_Form, self).__init__(*args, **kwargs)
-#         self.fields["Doctors"].widget = forms.widgets.CheckboxSelectMultiple()
-#         self.fields["Doctors"].queryset = Patient.Treatments.Doctors.all()
+    def __init__ (self,Patient, *args, **kwargs):
+        super(send_to_doc_Form, self).__init__(*args, **kwargs)
+        self.fields["Doctors"].widget = forms.widgets.CheckboxSelectMultiple()
+        choices = [(d.Doctor.id,d.Doctor.Name) for d in Patient.Treatments.all()]
+        print(choices)
+        self.fields["Doctors"].choices = choices
         
 
 # class Treatment_Form(forms.ModelForm):

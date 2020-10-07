@@ -25,10 +25,13 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('email',)
 
 
+class ReportAdmin(admin.ModelAdmin):
+    filter_horizontal = ("Doctors",)
+
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(Patient)
 admin.site.register(Doctor)
-admin.site.register(Reports)
+admin.site.register(Reports,ReportAdmin)
 admin.site.register(Treatment)
 admin.site.register(Specialization)
 admin.site.register(Disease)
