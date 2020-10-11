@@ -14,8 +14,21 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from .token import account_activation_token
 
+from django.contrib.messages.views import SuccessMessageMixin
+from django.urls import reverse_lazy
+from django.views import generic
+from bootstrap_modal_forms.mixins import PassRequestMixin
+
 
 # Create your views here.
+class SendToDoc(PassRequestMixin, SuccessMessageMixin, generic.CreateView):
+    print("here")
+    form_class = send_to_doc_Form
+    template_name = 'Users/send.html'
+    success_message = 'Success: Sent To Doctor.'
+    success_url = reverse_lazy('reports')
+
+
 def View_Treatment(request):
     Treatments = Treatment.objects.filter(Patient=request.user.Patient)
     return render(request, 'Users/Treat.html',{
@@ -40,13 +53,11 @@ def showfile(request):
         context= {
               'form': form,
               'lastfile' : lastfile,
-              'Send' : send_form,
               }
 
     if not context:
         context = {
             'form': form,
-            'Send' : send_form,
         }
     print(context)
     return render(request, 'Users/files.html', context)

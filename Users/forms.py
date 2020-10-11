@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
 from .models import User,Reports,Treatment,Doctor,Patient
-
+from bootstrap_modal_forms.mixins import PopRequestMixin, CreateUpdateAjaxMixin
 
 class CustomUserCreationForm(UserCreationForm):
 
@@ -27,17 +27,17 @@ class FileForm(forms.ModelForm):
             Description=data['Description'], Patient=user.Patient)
         report.save()
 
-class send_to_doc_Form(forms.ModelForm):
-    class Meta:
-        model= Reports
-        fields = ["Doctors"]
+# class send_to_doc_Form(forms.ModelForm):
+#     class Meta:
+#         model= Reports
+#         fields = ["Doctors"]
     
-    def __init__ (self,Patient, *args, **kwargs):
-        super(send_to_doc_Form, self).__init__(*args, **kwargs)
-        self.fields["Doctors"].widget = forms.widgets.CheckboxSelectMultiple()
-        choices = [(d.Doctor.id,d.Doctor.Name) for d in Patient.Treatments.all()]
-        print(choices)
-        self.fields["Doctors"].choices = choices
+#     def __init__ (self,Patient, *args, **kwargs):
+#         super(send_to_doc_Form, self).__init__(*args, **kwargs)
+#         self.fields["Doctors"].widget = forms.widgets.CheckboxSelectMultiple()
+#         choices = [(d.Doctor.id,d.Doctor.Name) for d in Patient.Treatments.all()]
+#         print(choices)
+#         self.fields["Doctors"].choices = choices
         
 
 # class Treatment_Form(forms.ModelForm):
@@ -56,3 +56,9 @@ class Register_Patient(forms.ModelForm):
     class Meta:
         model=Patient
         exclude = ['user']
+
+class send_to_doc_Form(PopRequestMixin, CreateUpdateAjaxMixin,forms.ModelForm):
+    class Meta:
+        model= Reports
+        fields = ["Doctors"]
+    

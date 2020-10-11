@@ -12,20 +12,25 @@
     {% for file in lastfile %}
         <a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank">{{ file.name }}</a>
         <h4>Hi {{ file.Patient.Name }}</h4> 
-        <form enctype="multipart/form-data" method="POST" action="">
-            {% csrf_token %}
-            {{ Send.as_p }}
-            {% for doctor in file.Doctors.all %}
-                <h3>{{doctor.id}}</h3>
-            {% endfor%}
-            {% for val,text in Send.Doctors.field.choices %}
-                <input type="checkbox" {% if val not in file.Doctors.all %} checked {% endif %} name="{{text}}" value="{{val}}" >
-                <label for="{{text}}"> {{text}} </label><br>
-            {% endfor %}
-            <input type="submit" value="Upload"/>
-        </form>
     {% endfor %}
     <br><br>
     </p>
 
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content"></div>
+        </div>
+      </div>
+      
+      <button class="signup-btn btn btn-primary" type="button" name="button">Sign up</button>
+      
+      <script type="text/javascript">
+        $(function () {
+          // Sign up button
+          $(".signup-btn").modalForm({formURL: "{% url 'SendToDoc' %}"});
+      
+        });
+      </script>
+
 {% endblock %}
+

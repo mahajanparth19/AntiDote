@@ -1,0 +1,11 @@
+pip install django-bootstrap-modal-forms
+
+Add bootstrap_modal_forms to your INSTALLED_APPS in settings.py:
+
+INSTALLED_APPS = [
+    ...
+    'bootstrap_modal_forms',
+    ...
+]
+
+Include Bootstrap, jQuery and jquery.bootstrap.modal.forms.js on every page where you would like to set up the AJAX driven Django forms in Bootstrap modal.
