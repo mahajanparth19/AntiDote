@@ -16,16 +16,34 @@
             {% csrf_token %}
             {{ Send.as_p }}
             {% for doctor in file.Doctors.all %}
-                <h3>{{doctor.id}}</h3>
+                <h3>{{doctor}}</h3>
             {% endfor%}
             {% for val,text in Send.Doctors.field.choices %}
-                <input type="checkbox" {% if val not in file.Doctors.all %} checked {% endif %} name="{{text}}" value="{{val}}" >
-                <label for="{{text}}"> {{text}} </label><br>
+                <input type="checkbox" class = "{{ file.name }}" name="{{text}}" value="{{val}}" >
+                <label for="{{text}}">{{text}} </label><br>
             {% endfor %}
             <input type="submit" value="Upload"/>
         </form>
     {% endfor %}
     <br><br>
     </p>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            {% for file in lastfile %}
+                let id_list = []
+                {% for doc in file.Doctors.all %} 
+                    id_list.push("{{ doc.id }}")
+                {% endfor%}
+                    console.log(id_list)
+                document.querySelectorAll(".{{file.name}}").forEach(function(check){
+                    console.log(check.value)
+                    if(id_list.includes(check.value)){
+                        check.checked = true
+                    }
+                })
+            {% endfor %}
+        })
+    </script>
 
 {% endblock %}
