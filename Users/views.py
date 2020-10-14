@@ -63,6 +63,16 @@ def showfile(request):
     return render(request, 'Users/files.html', context)
 
 
+def rform(request,num):
+    if(num == 1):
+        form = Register_Patient()
+    else:
+        form = Register_Doc()
+    
+    return render(request, 'Users/form.html', {
+        "form" : form
+    })
+
 
 def index(request):
      return render(request, "Users/index.html",)
@@ -93,6 +103,9 @@ def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
 
+def reg(request):
+    return render(request, "Users/registerDoctor.html")
+
 
 def register(request):
     if request.method == "POST":
@@ -102,12 +115,12 @@ def register(request):
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
         if password != confirmation:
-            return render(request, "Users/register.html", {
+            return render(request, "Users/registerDoctor.html", {
                 "message": "Passwords must match.",
                 "form" : form
             })
         if not form.is_valid():
-            return render(request, "Users/register.html",{
+            return render(request, "Users/registerDoctor.html",{
                 "form" : form
             })
 
@@ -125,14 +138,14 @@ def register(request):
                 "user" : user,
             })
         except IntegrityError:
-            return render(request, "Users/register.html", {
+            return render(request, "Users/registerDoctor.html", {
                 "message": "Username already taken."
             })
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
     else:
         form = Register_Patient()
-        return render(request, "Users/register.html",{
+        return render(request, "Users/registerDoctor.html",{
             "form" : form
         })
 
