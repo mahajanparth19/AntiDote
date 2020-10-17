@@ -21,9 +21,38 @@ from django.views.decorators.http import require_http_methods
 @login_required
 @doctor_required
 def view_active_treatments(request):
-    pass
+    Treatments = Treatment.objects.filter(Doctor=request.user.Doctor)
+    t = []
+    for tr in Treatments:
+        if Treatment.is_active:
+            t.append(tr)
 
+    return render(request, 'Users/ActiveTreat.html',{
+        'Treatments' : t,
+    })
 
+@login_required
+@doctor_required
+def view_new_treatments(request):
+    Treatments = Treatment.objects.filter(Doctor=request.user.Doctor)
+    t = []
+    for tr in Treatments:
+        if Treatment.is_new:
+            t.append(tr)
+
+    return render(request, 'Users/NewTreat.html',{
+        'Treatments' : t
+    })
+
+@login_required
+@doctor_required
+def Doctor_Treatment(request,nums):
+    reports = request.user.Doctor.Reports.all()
+    Treat = Treatment.objects.get(pk=nums)
+    return render(request, 'Users/DocTreat.html',{
+        'Treatment' : Treat,
+        'files' : reports
+    })
 
 @login_required()
 @patient_required
@@ -31,7 +60,18 @@ def View_Treatment(request):
     Treatments = Treatment.objects.filter(Patient=request.user.Patient)
     return render(request, 'Users/Treat.html',{
         'Treatments' : Treatments
-    })    
+    })   
+
+@login_required()
+@patient_required
+def Patient_Treatment(request,nums):
+    reports = Reports.objects.filter(Patient=request.user.Patient)
+    Treat = Treatment.objects.get(pk=nums)
+    return render(request, 'Users/Treatment.html',{
+        'Treatment' : Treat,
+        'files' : reports
+    })
+ 
 
 @login_required()
 @patient_required

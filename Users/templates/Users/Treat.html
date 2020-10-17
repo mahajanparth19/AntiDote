@@ -2,8 +2,9 @@
 
 {% block body %}
     <br><br>
-    <h1>Here</h1>
+    <h1 class="heading">Treatments</h1>
     {% for Treat in Treatments %}
+        <a href="{% url 'PTreat' Treat.id %}">{{Treat.id}}</a>
         <h3>{{ Treat.Patient.Name }} and {{ Treat.Doctor.Name }}</h3>
     {% endfor %}
     <br><br>

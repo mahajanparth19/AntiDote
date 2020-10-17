@@ -3,5 +3,5 @@ add prescription
 add appoinment
 change/ forgot password
 
-login required/ doctor/pateint required decorators
 
+active and new patients treatments on single page
