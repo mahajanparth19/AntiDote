@@ -21,12 +21,7 @@ from bootstrap_modal_forms.mixins import PassRequestMixin
 
 
 # Create your views here.
-class SendToDoc(PassRequestMixin, SuccessMessageMixin, generic.CreateView):
-    print("here")
-    form_class = send_to_doc_Form
-    template_name = 'Users/send.html'
-    success_message = 'Success: Sent To Doctor.'
-    success_url = reverse_lazy('reports')
+
 
 
 def View_Treatment(request):
@@ -34,6 +29,27 @@ def View_Treatment(request):
     return render(request, 'Users/Treat.html',{
         'Treatments' : Treatments
     })    
+
+def send(request,nums):
+    if request.method == "POST":
+        files = Reports.objects.get(pk=nums)
+        print(files)
+        docs = request.POST.getlist(f'file_{nums}')
+        
+        for id in docs:
+            if all(int(id) != doc.id for doc in files.Doctors.all()):
+                d = Doctor.objects.get(pk=id)
+                files.Doctors.add(d)
+        
+        print(files.Doctors.all())
+        print(docs)
+        for doc in files.Doctors.all():
+            if str(doc.id) not in docs:
+                d = Doctor.objects.get(pk=doc.id)
+                files.Doctors.remove(d)
+
+    
+    return HttpResponseRedirect(reverse("reports")) 
 
 
 def showfile(request):
@@ -53,13 +69,15 @@ def showfile(request):
         context= {
               'form': form,
               'lastfile' : lastfile,
+              'Send' : send_form
               }
 
     if not context:
         context = {
             'form': form,
+            'Send' : send_form
         }
-    print(context)
+
     return render(request, 'Users/files.html', context)
 
 

@@ -1,0 +1,10 @@
+{% extends "Users/layout.html" %}
+
+{% block body %}
+    <h6>Patient : {{ Treatment.Patient }}</h6>
+    <h6>Disease : {{ Treatment.Disease }}</h6>
+    {% for file in files %}
+        <a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank">{{ file.name }}</a>
+        <p>Description : {{file.Description}}</p>
+    {% endfor %}
+{% endblock %}
