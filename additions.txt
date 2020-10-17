@@ -1,11 +1,7 @@
-pip install django-bootstrap-modal-forms
+treatment display
+add prescription
+add appoinment
+change/ forgot password
 
-Add bootstrap_modal_forms to your INSTALLED_APPS in settings.py:
+login required/ doctor/pateint required decorators
 
-INSTALLED_APPS = [
-    ...
-    'bootstrap_modal_forms',
-    ...
-]
-
-Include Bootstrap, jQuery and jquery.bootstrap.modal.forms.js on every page where you would like to set up the AJAX driven Django forms in Bootstrap modal.

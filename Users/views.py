@@ -14,22 +14,20 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from .token import account_activation_token
 
-from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse_lazy
-from django.views import generic
-from bootstrap_modal_forms.mixins import PassRequestMixin
-
+from .decorators import patient_required, doctor_required
 
 # Create your views here.
 
-
-
+@login_required()
+@patient_required
 def View_Treatment(request):
     Treatments = Treatment.objects.filter(Patient=request.user.Patient)
     return render(request, 'Users/Treat.html',{
         'Treatments' : Treatments
     })    
 
+@login_required()
+@patient_required
 def send(request,nums):
     if request.method == "POST":
         files = Reports.objects.get(pk=nums)
@@ -51,7 +49,8 @@ def send(request,nums):
     
     return HttpResponseRedirect(reverse("reports")) 
 
-
+@login_required()
+@patient_required
 def showfile(request):
     # lastfile = request.user.Patient.Reports
     form = FileForm(request.POST or None, request.FILES or None)
@@ -93,7 +92,8 @@ def rform(request,num):
 
 
 def index(request):
-     return render(request, "Users/index.html",)
+    return render(request, "Users/index.html",)
+
 
 def login_view(request):
     if request.method == "POST":
@@ -107,13 +107,25 @@ def login_view(request):
             if not user.is_active:
                 return HttpResponse(f'Please confirm your email address to complete the registration')
             login(request, user)
+            link = request.POST["next"]
+            if link != "None":
+                return HttpResponseRedirect(link)
+            
             return HttpResponseRedirect(reverse("index"))
-        else:
+        else:   
             return render(request, "Users/login.html", {
                 "message": "Invalid username and/or password.",
+                "next" : request.POST["next"]
             })
     else:
-        return render(request, "Users/login.html")
+        if "next" in request.GET:
+            url = request.GET["next"]
+        else:
+            url = None 
+        return render(request, "Users/login.html",{
+            "next" : url
+        })
+        
 
 
 
@@ -162,10 +174,7 @@ def register(request):
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
     else:
-        form = Register_Patient()
-        return render(request, "Users/registerDoctor.html",{
-            "form" : form
-        })
+        return HttpResponseRedirect(reverse("index"))
 
 
 def register_Doctor(request):
@@ -205,10 +214,9 @@ def register_Doctor(request):
             })
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
-    form = Register_Doc()
-    return render(request,"Users/registerDoctor.html",{
-        "form" : form
-    })
+
+
+    return HttpResponseRedirect(reverse("index"))
 
 def activate(request, uidb64, token):
     try:

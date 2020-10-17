@@ -122,7 +122,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'Users.User'
-LOGIN_URL = '/Users/login'
+LOGIN_URL = 'login'
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
