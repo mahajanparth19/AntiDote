@@ -8,24 +8,20 @@
         <div>{{ message }}</div>
     {% endif %}
 
-    <form action="{% url 'registerDoctor' %}" method="post">
+    <form action = "{% if d %} {% url 'registerDoctor' %} {% else %} {% url 'register' %} {% endif %} " method="post">
         {% csrf_token %}
-        <div class="form-group">
-            <input class="form-control" autofocus type="email" name="email" placeholder="Email Address">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="password" placeholder="Password">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
-        </div>
+        {{ register.as_p }}
 
-        <input type="radio" class="radio" id="patient" name="Type" data-value=1>
+        <input type="radio" class="radio" id="patient" checked name="Type" data-value=1>
         <label for="patient">Patient</label>
-        <input type="radio" class="radio" id="doctor" name="Type" data-value=2>
+        <input type="radio" class="radio" id="doctor" {% if d %} checked {% endif %} name="Type" data-value=2>
         <label for="doctor">Doctor</label><br>
 
-        <div id="form"></div>
+        <div id="form">
+            {{ form.as_p }}
+        </div>
+
+        <input class="btn btn-primary" type="submit" value="Register">
 
     </form>
 

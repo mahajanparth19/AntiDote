@@ -6,7 +6,7 @@ from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
 from .models import User,Patient,Doctor,Reports,Treatment
-from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient
+from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient, LoginUserForm, RegisterUserForm
 from .utils import send_email
 from django.contrib.sites.shortcuts import get_current_site
 
@@ -15,8 +15,15 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from .token import account_activation_token
 
 from .decorators import patient_required, doctor_required
+from django.views.decorators.http import require_http_methods
 
 # Create your views here.
+@login_required
+@doctor_required
+def view_active_treatments(request):
+    pass
+
+
 
 @login_required()
 @patient_required
@@ -28,26 +35,26 @@ def View_Treatment(request):
 
 @login_required()
 @patient_required
+@require_http_methods(["POST"])
 def send(request,nums):
     if request.method == "POST":
         files = Reports.objects.get(pk=nums)
-        print(files)
+
         docs = request.POST.getlist(f'file_{nums}')
         
         for id in docs:
             if all(int(id) != doc.id for doc in files.Doctors.all()):
                 d = Doctor.objects.get(pk=id)
                 files.Doctors.add(d)
-        
-        print(files.Doctors.all())
-        print(docs)
+
         for doc in files.Doctors.all():
             if str(doc.id) not in docs:
                 d = Doctor.objects.get(pk=doc.id)
                 files.Doctors.remove(d)
+        
+            
+        return HttpResponseRedirect(reverse("reports")) 
 
-    
-    return HttpResponseRedirect(reverse("reports")) 
 
 @login_required()
 @patient_required
@@ -98,8 +105,9 @@ def index(request):
 def login_view(request):
     if request.method == "POST":
         # Attempt to sign user in
-        email = request.POST["email"]
-        password = request.POST["password"]
+        log = LoginUserForm(request.POST)
+        email = log.data.get("email")
+        password = log.data.get("password")
         user = authenticate(request, email=email, password=password)
 
         # Check if authentication successful
@@ -115,15 +123,18 @@ def login_view(request):
         else:   
             return render(request, "Users/login.html", {
                 "message": "Invalid username and/or password.",
-                "next" : request.POST["next"]
+                "next" : request.POST["next"],
+                "login" : log
             })
     else:
+        log = LoginUserForm()
         if "next" in request.GET:
             url = request.GET["next"]
         else:
             url = None 
         return render(request, "Users/login.html",{
-            "next" : url
+            "next" : url,
+            "login" : log,
         })
         
 
@@ -134,29 +145,37 @@ def logout_view(request):
     return HttpResponseRedirect(reverse("index"))
 
 def reg(request):
-    return render(request, "Users/registerDoctor.html")
+    reg = RegisterUserForm()
+    form = Register_Patient()
+    return render(request, "Users/registerDoctor.html",{
+        "register" : reg,
+        "form" : form,
+    })
 
 
 def register(request):
     if request.method == "POST":
-        email = request.POST["email"]
+        reg = RegisterUserForm(request.POST)
+        email = reg.data.get("email")
         form = Register_Patient(request.POST)
         # Ensure password matches confirmation
-        password = request.POST["password"]
-        confirmation = request.POST["confirmation"]
+        password = reg.data.get("password1")
+        confirmation = reg.data.get("password2")
         if password != confirmation:
             return render(request, "Users/registerDoctor.html", {
                 "message": "Passwords must match.",
-                "form" : form
+                "form" : form,
+                "register" : reg
             })
         if not form.is_valid():
             return render(request, "Users/registerDoctor.html",{
-                "form" : form
+                "form" : form,
+                "register" : reg,
             })
 
         # Attempt to create new user
         try:
-            user = User.objects.create_user(email, password,is_active = True,is_patient = True)
+            user = User.objects.create_user(email, password,is_active = True,is_patient = True) ### change is active to false
             user.save()
             p = form.save(commit=False)
             p.user = user
@@ -169,7 +188,9 @@ def register(request):
             })
         except IntegrityError:
             return render(request, "Users/registerDoctor.html", {
-                "message": "Username already taken."
+                "message": "Username already taken.",
+                "form" : form,
+                "register" : reg
             })
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
@@ -180,23 +201,28 @@ def register(request):
 def register_Doctor(request):
     if request.method == "POST":
         form = Register_Doc(request.POST)
-        email = request.POST["email"]
+        reg = RegisterUserForm(request.POST)
+        email = reg.data.get("email")
         # Ensure password matches confirmation
-        password = request.POST["password"]
-        confirmation = request.POST["confirmation"]
+        password = reg.data.get("password1")
+        confirmation = reg.data.get("password2")
         if password != confirmation:
             return render(request, "Users/registerDoctor.html", {
                 "message": "Passwords must match.",
-                "form" : form
+                "form" : form,
+                "d" : True,
+                "register" : reg
             })
         if not form.is_valid():
             return render(request,"Users/registerDoctor.html",{
-                 "form" : form
+                 "form" : form,
+                 "d" : True,
+                 "register" : reg
                  })
 
         # Attempt to create new user
         try:
-            user = User.objects.create_user(email, password,is_active = True,is_doctor = True)
+            user = User.objects.create_user(email, password,is_active = True,is_doctor = True) ### change is active to false
             user.save()
             d = form.save(commit=False)
             d.user = user
@@ -210,7 +236,9 @@ def register_Doctor(request):
         except IntegrityError:
             return render(request, "Users/registerDoctor.html", {
                 "message": "Username already taken.",
-                "form" : form
+                "form" : form,
+                "d" : True,
+                "register" : reg
             })
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
