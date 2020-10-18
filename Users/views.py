@@ -6,7 +6,7 @@ from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
 from .models import User,Patient,Doctor,Reports,Treatment
-from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient, LoginUserForm, RegisterUserForm
+from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient, LoginUserForm, RegisterUserForm, Forgot_email_form,Forgot_Password_Form
 from .utils import send_email
 from django.contrib.sites.shortcuts import get_current_site
 
@@ -49,6 +49,8 @@ def view_new_treatments(request):
 def Doctor_Treatment(request,nums):
     reports = request.user.Doctor.Reports.all()
     Treat = Treatment.objects.get(pk=nums)
+    if Treat.Doctor != request.user.Doctor:
+        return HttpResponseRedirect(reverse("index"))
     return render(request, 'Users/DocTreat.html',{
         'Treatment' : Treat,
         'files' : reports
@@ -67,6 +69,8 @@ def View_Treatment(request):
 def Patient_Treatment(request,nums):
     reports = Reports.objects.filter(Patient=request.user.Patient)
     Treat = Treatment.objects.get(pk=nums)
+    if Treat.Patient != request.user.Patient:
+        return HttpResponseRedirect(reverse("index"))
     return render(request, 'Users/Treatment.html',{
         'Treatment' : Treat,
         'files' : reports
@@ -79,7 +83,8 @@ def Patient_Treatment(request,nums):
 def send(request,nums):
     if request.method == "POST":
         files = Reports.objects.get(pk=nums)
-
+        if file.Patient != request.user.Patient:
+            return HttpResponseRedirect(reverse("index"))
         docs = request.POST.getlist(f'file_{nums}')
         
         for id in docs:
@@ -141,6 +146,70 @@ def rform(request,num):
 def index(request):
     return render(request, "Users/index.html",)
 
+def email_forgot(request):
+    if request.method == "POST":
+        form = Forgot_email_form(request.POST)
+        email = form.data.get("email")
+        print(email)
+        u = User.objects.filter(email=email).first()
+        
+        print("here",u)
+        if u is not None :
+            current_site = get_current_site(request)
+            send_email(current_site,u,mess="reset your Password",link="Forgot")
+            logout(request)
+            return render(request, "Users/confirmation.html",{
+                    "message" : "Change you password by email sent ",
+                    "u" : u,
+                    })
+        else:
+            return render(request, "Users/forgot.html",{
+                "message" : "Forgot Password",
+                "form" : form,
+                "name" : "Send Email",
+                "error" : "Email Doesnot Exists"
+            })
+                    
+            
+    form = Forgot_email_form()
+    return render(request, "Users/forgot.html",{
+        "message" : "Forgot Password",
+        "form" : form,
+        "name" : "Send Email"
+    })
+
+def Forgot(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, user.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        if request.method == "POST":
+            form = Forgot_Password_Form(request.POST)
+            if form.data.get('password1') != form.data.get('password2'):
+                return render(request, "Users/forgot.html",{
+                "message" : "Change Passsword",
+                "form" : form,
+                "name" : "Change Password",
+                "error" : "Password Should Match"
+            })
+            else:
+                user.set_password(form.data.get('password1'))
+                user.save()
+                return HttpResponseRedirect(reverse("login"))
+
+        else:
+            form = Forgot_Password_Form()
+        return render(request, "Users/forgot.html",{
+                "message" : "Change Passsword",
+                "form" : form,
+                "name" : "Change Password",
+            })
+    else:
+        return render(request, "Users/confirmation.html",{
+                "message" : "Activation link is invalid!" 
+            })
 
 def login_view(request):
     if request.method == "POST":
@@ -224,7 +293,7 @@ def register(request):
             send_email(current_site,user,p.Name)
             return render(request, "Users/confirmation.html",{
                 "message" : "Confirm your email",
-                "user" : user,
+                "u" : user,
             })
         except IntegrityError:
             return render(request, "Users/registerDoctor.html", {
@@ -271,7 +340,7 @@ def register_Doctor(request):
             send_email(current_site,user,d.Name)
             return render(request, "Users/confirmation.html",{
                 "message" : "Confirm your email",
-                "user" : user,
+                "u" : user,
             })
         except IntegrityError:
             return render(request, "Users/registerDoctor.html", {

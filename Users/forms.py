@@ -29,6 +29,19 @@ class RegisterUserForm(forms.ModelForm):
         model = User
         fields = ['email','password1','password2']
 
+class Forgot_email_form(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['email']
+
+class Forgot_Password_Form(forms.ModelForm):
+    password1 = forms.CharField(widget=forms.PasswordInput())
+    password2 = forms.CharField(widget=forms.PasswordInput())
+    class Meta:
+        model = User
+        fields = ['password1','password2']
+        
+
 class FileForm(forms.ModelForm):
     class Meta:
         model= Reports
