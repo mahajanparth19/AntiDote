@@ -4,8 +4,8 @@ from django.template.loader import render_to_string
 from .token import account_activation_token
 from django.core.mail import EmailMessage
 
-def send_email(current_site,user,name=None,mess="confirm your registration",link="activate"):
-    mail_subject = 'Activate your account.'
+def send_email(current_site,user,name=None,mess="confirm your registration",link="activate",subj = "Activate your account."):
+    mail_subject = subj
     if name is None:
         name=user.email
     message = render_to_string('Users/acc_active_email.html', {

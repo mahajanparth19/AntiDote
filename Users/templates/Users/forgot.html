@@ -1,0 +1,13 @@
+{% extends "Users/layout.html" %}
+
+{% block body %}
+    <br><br>
+    <h1 class="heading">{{message}}</h1>
+    <form action="", method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="{{name}}"/>
+    </form>
+
+    {% if error %} <h6>{{ error }}</h6> {% endif%}
+{% endblock %}

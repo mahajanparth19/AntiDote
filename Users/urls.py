@@ -20,5 +20,7 @@ urlpatterns = [
     path("ActiveTreat",views.view_active_treatments,name="ActiveTreat"),
     path("DTreat/<int:nums>",views.Doctor_Treatment,name="DTreat"),
     path("Email_Forget",views.email_forgot,name="Email_Forget"),
-    url(r'^Forgot/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',views.Forgot,name="Forgot")
+    url(r'^Forgot/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',views.Forgot,name="Forgot"),
+    path("Edit_profile",views.Edit_profile,name="Edit_profile"),
+    path("Change_Password",views.Change_Password,name="Change_Password"),
 ]

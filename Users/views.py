@@ -18,6 +18,59 @@ from .decorators import patient_required, doctor_required
 from django.views.decorators.http import require_http_methods
 
 # Create your views here.
+
+def Change_Password(request):
+    if request.method == "POST":
+        form = Forgot_Password_Form(request.POST)
+        if not form.is_valid() or form.data.get('password1') != form.data.get('password2'):
+            return render(request, "Users/forgot.html",{
+            "message" : "Change Passsword",
+            "form" : form,
+            "name" : "Change Password",
+            "error" : "Password Should Match"
+        })
+        else:
+            request.user.set_password(form.data.get('password1'))
+            request.user.save()
+            return HttpResponseRedirect(reverse("login"))
+
+    form = Forgot_Password_Form()
+    return render(request, "Users/forgot.html",{
+            "message" : "Change Passsword",
+            "form" : form,
+            "name" : "Change Password",
+        })
+
+@login_required
+def Edit_profile(request):
+    if request.method == "POST":
+        if request.user.is_patient:
+            form = Register_Patient(data=request.POST,instance=request.user.Patient)
+            form.save()
+            form = Register_Patient(instance=request.user.Patient)
+            return render(request,"Users/Edit.html",{
+                "form" : form,
+            })
+        else: 
+            form = Register_Doc(data=request.POST,instance=request.user.Doctor)
+            form.save()
+            form = Register_Doc(instance=request.user.Doctor)
+            return render(request,"Users/Edit.html",{
+                "form" : form,
+            })
+         
+    if request.user.is_patient:
+        form = Register_Patient(instance=request.user.Patient)
+        return render(request,"Users/Edit.html",{
+            "form" : form,
+        })
+    else: 
+        form = Register_Doc(instance=request.user.Doctor)
+        return render(request,"Users/Edit.html",{
+            "form" : form,
+        })
+
+
 @login_required
 @doctor_required
 def view_active_treatments(request):
@@ -156,7 +209,7 @@ def email_forgot(request):
         print("here",u)
         if u is not None :
             current_site = get_current_site(request)
-            send_email(current_site,u,mess="reset your Password",link="Forgot")
+            send_email(current_site,u,mess="reset your Password",link="Forgot",subj = "Reset Password")
             logout(request)
             return render(request, "Users/confirmation.html",{
                     "message" : "Change you password by email sent ",
@@ -187,7 +240,7 @@ def Forgot(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         if request.method == "POST":
             form = Forgot_Password_Form(request.POST)
-            if form.data.get('password1') != form.data.get('password2'):
+            if not form.is_valid() or form.data.get('password1') != form.data.get('password2'):
                 return render(request, "Users/forgot.html",{
                 "message" : "Change Passsword",
                 "form" : form,
@@ -208,7 +261,7 @@ def Forgot(request, uidb64, token):
             })
     else:
         return render(request, "Users/confirmation.html",{
-                "message" : "Activation link is invalid!" 
+                "message" : "Link is invalid!" 
             })
 
 def login_view(request):
@@ -270,7 +323,7 @@ def register(request):
         # Ensure password matches confirmation
         password = reg.data.get("password1")
         confirmation = reg.data.get("password2")
-        if password != confirmation:
+        if not reg.is_valid() or password != confirmation:
             return render(request, "Users/registerDoctor.html", {
                 "message": "Passwords must match.",
                 "form" : form,
@@ -311,6 +364,12 @@ def register_Doctor(request):
     if request.method == "POST":
         form = Register_Doc(request.POST)
         reg = RegisterUserForm(request.POST)
+        if not reg.is_valid():
+            return render(request,"Users/registerDoctor.html",{
+                 "form" : form,
+                 "d" : True,
+                 "register" : reg
+                 })
         email = reg.data.get("email")
         # Ensure password matches confirmation
         password = reg.data.get("password1")

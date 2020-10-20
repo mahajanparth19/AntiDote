@@ -2,6 +2,9 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
 from .models import User,Reports,Treatment,Doctor,Patient
 from bootstrap_modal_forms.mixins import PopRequestMixin, CreateUpdateAjaxMixin
+from django.contrib.auth.password_validation import validate_password
+from django.core import validators
+
 
 class CustomUserCreationForm(UserCreationForm):
 
@@ -23,6 +26,7 @@ class LoginUserForm(forms.ModelForm):
         fields = ['email','password'] 
 
 class RegisterUserForm(forms.ModelForm):
+    # password1 = forms.CharField(widget=forms.PasswordInput(),validators=[validate_password]) #uncomment when using password validation
     password1 = forms.CharField(widget=forms.PasswordInput())
     password2 = forms.CharField(widget=forms.PasswordInput())
     class Meta:
@@ -35,6 +39,7 @@ class Forgot_email_form(forms.ModelForm):
         fields = ['email']
 
 class Forgot_Password_Form(forms.ModelForm):
+    # password1 = forms.CharField(widget=forms.PasswordInput(),validators=[validate_password]) # to use django validation
     password1 = forms.CharField(widget=forms.PasswordInput())
     password2 = forms.CharField(widget=forms.PasswordInput())
     class Meta:

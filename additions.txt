@@ -1,7 +1,9 @@
 treatment display
 add prescription
 add appoinment
-change/ forgot password
+change/ forgot password # done
 
 
-active and new patients treatments on single page
+active and new patients treatments on single page using js
+
+add password validation # did this just uncomment the lines in forms.py
