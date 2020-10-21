@@ -2,10 +2,36 @@
 
 {% block body %}
     <br><br>
-    <h1 class="heading">Treatments</h1>
-    {% for Treat in Treatments %}
-        <a href="{% url 'PTreat' Treat.id %}">{{Treat.id}}</a>
+    <h1 class="heading">Active Treatments</h1>
+    {% for Treat in active %}
+        <a href="{% url 'Treat' Treat.id %}">{{Treat.id}}</a>
         <h3>{{ Treat.Patient.Name }} and {{ Treat.Doctor.Name }}</h3>
+    {% endfor %}
+    
+    <br><br>
+    <h1 class="heading">New Treatment Requests</h1>
+    {% for Treat in new %}
+        <h3>{{ Treat.Patient.Name }} and {{ Treat.Doctor.Name }}</h3>
+    {% endfor %}
+    
+    <br><br>
+
+    <h1 class="heading">Completed Treatments</h1>
+    {% for Treat in completed %}
+        <a href="{% url 'Treat' Treat.id %}">{{Treat.id}}</a>
+        <h3>{{ Treat.Patient.Name }} and {{ Treat.Doctor.Name }}</h3>
+    {% endfor %}
+    
+    <br><br>
+ 
+    {% for Treat in rejected %}
+        <script> 
+            alert("Treatment with {{ Treat.Doctor }} for {{ Treat.Disease}} was Rejected")
+            fetch(`{% url 'Delete_Treatment' Treat.id%}`)
+            .then(response => response.text())
+            .then(data => {
+            })
+        </script>
     {% endfor %}
     <br><br>
     </p>

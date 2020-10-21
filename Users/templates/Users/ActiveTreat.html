@@ -4,7 +4,7 @@
     <br><br>
     <h1 class="heading">Active Patients</h1>
     {% for Treat in Treatments %}
-        <a href="{% url 'DTreat' Treat.id %}">{{Treat.id}}</a>
+        <a href="{% url 'Treat' Treat.id %}">{{Treat.id}}</a>
         <h3>{{ Treat.Patient.Name }} and {{ Treat.Doctor.Name }}</h3>
     {% endfor %}
     <br><br>

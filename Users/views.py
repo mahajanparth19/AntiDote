@@ -27,12 +27,15 @@ def Change_Password(request):
             "message" : "Change Passsword",
             "form" : form,
             "name" : "Change Password",
-            "error" : "Password Should Match"
+            "error" : "Passwords Should Match"
         })
         else:
             request.user.set_password(form.data.get('password1'))
             request.user.save()
-            return HttpResponseRedirect(reverse("login"))
+            # return HttpResponseRedirect(reverse("login"))
+            return render(request, "Users/confirmation.html",{
+                "message" : "Password Changed Succesfully. Now you can login your account." 
+            })
 
     form = Forgot_Password_Form()
     return render(request, "Users/forgot.html",{
@@ -43,32 +46,27 @@ def Change_Password(request):
 
 @login_required
 def Edit_profile(request):
+    message = None
     if request.method == "POST":
         if request.user.is_patient:
             form = Register_Patient(data=request.POST,instance=request.user.Patient)
             form.save()
-            form = Register_Patient(instance=request.user.Patient)
-            return render(request,"Users/Edit.html",{
-                "form" : form,
-            })
+            
         else: 
             form = Register_Doc(data=request.POST,instance=request.user.Doctor)
             form.save()
-            form = Register_Doc(instance=request.user.Doctor)
-            return render(request,"Users/Edit.html",{
-                "form" : form,
-            })
-         
+        
+        message = "Profile Updated Succesfully"
+    
     if request.user.is_patient:
         form = Register_Patient(instance=request.user.Patient)
-        return render(request,"Users/Edit.html",{
-            "form" : form,
-        })
     else: 
         form = Register_Doc(instance=request.user.Doctor)
-        return render(request,"Users/Edit.html",{
-            "form" : form,
-        })
+
+    return render(request,"Users/Edit.html",{
+                "form" : form,
+                "message" : message
+            })
 
 
 @login_required
@@ -77,7 +75,7 @@ def view_active_treatments(request):
     Treatments = Treatment.objects.filter(Doctor=request.user.Doctor)
     t = []
     for tr in Treatments:
-        if Treatment.is_active:
+        if tr.is_active:
             t.append(tr)
 
     return render(request, 'Users/ActiveTreat.html',{
@@ -90,7 +88,7 @@ def view_new_treatments(request):
     Treatments = Treatment.objects.filter(Doctor=request.user.Doctor)
     t = []
     for tr in Treatments:
-        if Treatment.is_new:
+        if tr.is_new:
             t.append(tr)
 
     return render(request, 'Users/NewTreat.html',{
@@ -98,37 +96,88 @@ def view_new_treatments(request):
     })
 
 @login_required
-@doctor_required
-def Doctor_Treatment(request,nums):
-    reports = request.user.Doctor.Reports.all()
+def Treats(request,nums):
     Treat = Treatment.objects.get(pk=nums)
-    if Treat.Doctor != request.user.Doctor:
-        return HttpResponseRedirect(reverse("index"))
-    return render(request, 'Users/DocTreat.html',{
+    if request.user.is_doctor:
+        reports = request.user.Doctor.Reports.all()
+        if Treat.Doctor != request.user.Doctor or Treat.is_completed or Treat.is_new:
+            return HttpResponseRedirect(reverse("index"))
+    else:
+        reports = Reports.objects.filter(Patient=request.user.Patient)
+        if Treat.Patient != request.user.Patient or Treat.is_new:
+            return HttpResponseRedirect(reverse("index"))
+
+    return render(request, 'Users/Treatment.html',{
         'Treatment' : Treat,
         'files' : reports
     })
+
+@login_required()
+def delete_Treat(request,nums):
+    t = Treatment.objects.get(pk=nums)
+    print(nums)
+    if t.Patient != request.user.Patient:
+        return HttpResponseRedirect(reverse("View_Treatment"))
+    
+    t.delete()
+    return HttpResponseRedirect(reverse("View_Treatment"))
+
+@login_required()
+def Complete_Treat(request,nums):
+    if request.method == "POST":
+        t = Treatment.objects.get(pk=nums)
+        print(nums)
+        if t.Doctor != request.user.Doctor:
+            pass
+        else:
+            t.is_completed = True
+            t.is_active = False
+            t.save()
+
+    return HttpResponseRedirect(reverse("ActiveTreat"))
+
+@login_required()
+def not_new(request,nums):
+    if request.method == "POST":
+        t = Treatment.objects.get(pk=nums)
+        print(nums)
+        if t.Doctor != request.user.Doctor:
+            pass
+        else:
+            t.is_new = False
+            if "Accept" in request.POST:
+                t.is_active = True
+            t.save()
+
+    return HttpResponseRedirect(reverse("NewTreat"))
 
 @login_required()
 @patient_required
 def View_Treatment(request):
     Treatments = Treatment.objects.filter(Patient=request.user.Patient)
+    
+    active = []
+    new= []
+    rejected = []
+    completed = []
+
+    for t in Treatments:
+        if t.is_active:
+            active.append(t)
+        elif t.is_new:
+            new.append(t)
+        elif t.is_completed:
+            completed.append(t)
+        else:
+            rejected.append(t)
     return render(request, 'Users/Treat.html',{
-        'Treatments' : Treatments
+        'active' : active,
+        'new' : new,
+        'rejected' : rejected,
+        "completed" : completed
     })   
 
-@login_required()
-@patient_required
-def Patient_Treatment(request,nums):
-    reports = Reports.objects.filter(Patient=request.user.Patient)
-    Treat = Treatment.objects.get(pk=nums)
-    if Treat.Patient != request.user.Patient:
-        return HttpResponseRedirect(reverse("index"))
-    return render(request, 'Users/Treatment.html',{
-        'Treatment' : Treat,
-        'files' : reports
-    })
- 
+
 
 @login_required()
 @patient_required
@@ -136,7 +185,7 @@ def Patient_Treatment(request,nums):
 def send(request,nums):
     if request.method == "POST":
         files = Reports.objects.get(pk=nums)
-        if file.Patient != request.user.Patient:
+        if files.Patient != request.user.Patient:
             return HttpResponseRedirect(reverse("index"))
         docs = request.POST.getlist(f'file_{nums}')
         

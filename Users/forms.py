@@ -66,8 +66,13 @@ class send_to_doc_Form(forms.ModelForm):
     def __init__ (self,Patient, *args, **kwargs):
         super(send_to_doc_Form, self).__init__(*args, **kwargs)
         self.fields["Doctors"].widget = forms.widgets.CheckboxSelectMultiple()
-        choices = [(d.Doctor.id,d.Doctor.Name) for d in Patient.Treatments.all()]
+        choices = []
+        # choices = [(d.Doctor.id,d.Doctor.Name) for d in Patient.Treatments.all()]
+        for treat in Patient.Treatments.all():
+            if treat.is_active:
+                choices.append((treat.Doctor.id,treat.Doctor.Name))
         self.fields["Doctors"].choices = choices
+
         
 
 # class Treatment_Form(forms.ModelForm):
@@ -87,8 +92,3 @@ class Register_Patient(forms.ModelForm):
         model=Patient
         exclude = ['user']
 
-# class send_to_doc_Form(PopRequestMixin, CreateUpdateAjaxMixin,forms.ModelForm):
-#     class Meta:
-#         model= Reports
-#         fields = ["Doctors"]
-    

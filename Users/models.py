@@ -62,7 +62,7 @@ class Reports(models.Model):
     Description = models.CharField(max_length=500)
     Patient = models.ForeignKey(Patient,on_delete=models.CASCADE,related_name="Reports")
     filepath= models.FileField(upload_to='files/', null=True, verbose_name="")
-    Doctors = models.ManyToManyField(Doctor,related_name="Reports",null=True)
+    Doctors = models.ManyToManyField(Doctor,related_name="Reports",null=True,blank=True)
     
     def __str__(self):
         return self.name + ": " + str(self.filepath)
@@ -79,6 +79,7 @@ class Treatment(models.Model):
     Doctor = models.ForeignKey(Doctor,related_name="Treatments",null=True,on_delete=models.CASCADE)
     is_active = models.BooleanField(default=False)
     is_new = models.BooleanField(default=False)
+    is_completed = models.BooleanField(default=False)
     Disease = models.ForeignKey(Disease,on_delete=models.PROTECT,related_name="Patients")
     Prescription = models.TextField(max_length=800,null=True,default = None,blank=True)
     Appointment = models.DateField(null=True,default = None,blank=True)

@@ -1,17 +1,43 @@
 {% extends "Users/layout.html" %}
 
 {% block body %}
+    {% if request.user.is_patient %}
     <h6>Doctor : {{ Treatment.Doctor }}</h6>
+    {% else %}
+    <h6>Patient : {{ Treatment.Patient }}</h6>
+    {% endif %}
     <h6>Disease : {{ Treatment.Disease }}</h6>
 
     <br><br>
-    <h3>Reports</h3>
-    {% for file in files %}
-        <a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank">{{ file.name }}</a>
-        <p>Description : {{file.Description}}</p>
-    {% endfor %}
+    {% if files %}
+        <h3>Reports</h3>
+        {% for file in files %}
+            Name: <a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank">{{ file.name }}</a>
+            <p>Description : {{file.Description}}</p>
+        {% endfor %}
+    {% else%}
+        <h5> No Reports Shared</h5>
+    {% endif %}
 
     <h3>Appointments</h3>
 
     <h3>Prescription</h3>
+    
+
+    <br><br><br>
+    {% if request.user.is_patient and Treatment.is_completed %}
+        <form method="post" action="{% url 'Delete_Treatment' Treatment.id%}">
+            {% csrf_token %}
+            <button type="submit">Delete Treatment</button>
+        </form>    
+    {% endif %}
+
+    {% if request.user.is_doctor %}
+        {% if not Treatment.is_completed %}
+            <form method="post" action="{% url 'Complete_Treatment' Treatment.id %}">
+                {% csrf_token %}
+                <button type="submit">Treatment Completed</button>
+            </form>
+        {% endif %}
+    {% endif %}
 {% endblock %}

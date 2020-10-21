@@ -5,6 +5,12 @@
     <h1 class="heading">New Patient Requests</h1>
     {% for Treat in Treatments %}
         <h3>{{ Treat.Patient.Name }} and {{ Treat.Doctor.Name }}</h3>
+        <form action="{% url 'not_new' Treat.id %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Accept" name="Accept">
+            <input type="submit" value="Reject">
+        </form>
+
     {% endfor %}
     <br><br>
     </p>
