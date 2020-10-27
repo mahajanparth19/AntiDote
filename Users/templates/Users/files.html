@@ -1,49 +1,50 @@
 {% extends "Users/layout.html" %}
+{% load crispy_forms_tags %}
 
 {% block body %}
     <h1>Upload Files</h1>
     <form enctype="multipart/form-data" method="POST" action="">
     {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Upload"/>
+    {{ form|crispy }}
+    <input type="submit" value="Upload" class="btn btn-primary"/>
     </form>
 
     <br><br>
+
     {% for file in lastfile %}
-        <a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank">{{ file.name }}</a>
-        <h4>Hi {{ file.Patient.Name }}</h4> 
-        <form enctype="multipart/form-data" method="POST" action="">
-            {% csrf_token %}
-            {{ Send.as_p }}
-            {% for doctor in file.Doctors.all %}
-                <h3>{{doctor}}</h3>
-            {% endfor%}
-            {% for val,text in Send.Doctors.field.choices %}
-                <input type="checkbox" class = "{{ file.name }}" name="{{text}}" value="{{val}}" >
-                <label for="{{text}}">{{text}} </label><br>
-            {% endfor %}
-            <input type="submit" value="Upload"/>
-        </form>
+    <a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank">{{ file.name }}</a>
+    <form method="POST" action="{% url 'send' file.id %}">
+        {% csrf_token %}
+        {% for val,text in Send.Doctors.field.choices %}
+            <input type="checkbox" class = "{{ file.name }}" name="file_{{file.id}}" value="{{val}}" >
+            <label >{{text}} </label><br>
+        {% endfor %}
+        <input type="submit" value="Send" class="btn btn-primary"/>
+    </form>
     {% endfor %}
     <br><br>
     </p>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            {% for file in lastfile %}
-                let id_list = []
-                {% for doc in file.Doctors.all %} 
-                    id_list.push("{{ doc.id }}")
-                {% endfor%}
-                    console.log(id_list)
-                document.querySelectorAll(".{{file.name}}").forEach(function(check){
-                    console.log(check.value)
-                    if(id_list.includes(check.value)){
-                        check.checked = true
-                    }
-                })
-            {% endfor %}
-        })
+    document.addEventListener("DOMContentLoaded", function() {
+        let id_list = []
+        {% for file in lastfile %}
+            id_list = []
+            {% for doc in file.Doctors.all %} 
+                id_list.push("{{ doc.id }}")
+            {% endfor%}
+                console.log(id_list)
+            document.querySelectorAll(".{{file.name}}").forEach(function(check){
+                console.log(check.value)
+                if(id_list.includes(check.value)){
+                    check.checked = true
+                }
+            })
+        {% endfor %}
+
+
+    })
     </script>
 
 {% endblock %}
+

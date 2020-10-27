@@ -9,6 +9,12 @@ body {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
+.center {
+    margin: auto;
+    width: 90%;
+    padding: 10px;
+  }
+
 .img{
     float: left;
     margin-right: 5%;
