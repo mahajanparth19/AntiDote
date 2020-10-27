@@ -1,4 +1,5 @@
 {% extends "Users/layout.html" %}
+{% load crispy_forms_tags %}
 
 {% block body %}
 
@@ -10,7 +11,7 @@
 
     <form action = "{% if d %} {% url 'registerDoctor' %} {% else %} {% url 'register' %} {% endif %} " method="post">
         {% csrf_token %}
-        {{ register.as_p }}
+        {{ register|crispy }}
 
         <input type="radio" class="radio" id="patient" checked name="Type" data-value=1>
         <label for="patient">Patient</label>
@@ -18,10 +19,10 @@
         <label for="doctor">Doctor</label><br>
 
         <div id="form">
-            {{ form.as_p }}
+            {{ form|crispy }}
         </div>
 
-        <input class="btn btn-primary" type="submit" value="Register">
+        <input class="btn btn-primary" type="submit" value="Register" class="btn btn-primary">
 
     </form>
 

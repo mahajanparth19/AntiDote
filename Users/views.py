@@ -6,7 +6,7 @@ from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
 from .models import User,Patient,Doctor,Reports,Treatment
-from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient, LoginUserForm, RegisterUserForm, Forgot_email_form,Forgot_Password_Form
+from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient, LoginUserForm, RegisterUserForm, Forgot_email_form,Forgot_Password_Form, Prescription
 from .utils import send_email
 from django.contrib.sites.shortcuts import get_current_site
 
@@ -102,15 +102,22 @@ def Treats(request,nums):
         reports = request.user.Doctor.Reports.all()
         if Treat.Doctor != request.user.Doctor or Treat.is_completed or Treat.is_new:
             return HttpResponseRedirect(reverse("index"))
+
+        form = Prescription(instance=Treat)
+        return render(request, 'Users/Treatment.html',{
+            'Treatment' : Treat,
+            'files' : reports,
+            'presc' : form
+        })
     else:
         reports = Reports.objects.filter(Patient=request.user.Patient)
         if Treat.Patient != request.user.Patient or Treat.is_new:
             return HttpResponseRedirect(reverse("index"))
 
-    return render(request, 'Users/Treatment.html',{
-        'Treatment' : Treat,
-        'files' : reports
-    })
+        return render(request, 'Users/Treatment.html',{
+            'Treatment' : Treat,
+            'files' : reports
+        })
 
 @login_required()
 def delete_Treat(request,nums):

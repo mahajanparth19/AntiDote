@@ -92,3 +92,7 @@ class Register_Patient(forms.ModelForm):
         model=Patient
         exclude = ['user']
 
+class Prescription(forms.ModelForm):
+    class Meta:
+        model = Treatment
+        fields = ['Prescription']

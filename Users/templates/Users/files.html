@@ -1,11 +1,12 @@
 {% extends "Users/layout.html" %}
+{% load crispy_forms_tags %}
 
 {% block body %}
     <h1>Upload Files</h1>
     <form enctype="multipart/form-data" method="POST" action="">
     {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Upload"/>
+    {{ form|crispy }}
+    <input type="submit" value="Upload" class="btn btn-primary"/>
     </form>
 
     <br><br>
@@ -18,7 +19,7 @@
             <input type="checkbox" class = "{{ file.name }}" name="file_{{file.id}}" value="{{val}}" >
             <label >{{text}} </label><br>
         {% endfor %}
-        <input type="submit" value="Send"/>
+        <input type="submit" value="Send" class="btn btn-primary"/>
     </form>
     {% endfor %}
     <br><br>
