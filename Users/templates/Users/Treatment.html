@@ -1,0 +1,52 @@
+{% extends "Users/layout.html" %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+    {% if request.user.is_patient %}
+    <h6>Doctor : {{ Treatment.Doctor }}</h6>
+    {% else %}
+    <h6>Patient : {{ Treatment.Patient }}</h6>
+    {% endif %}
+    <h6>Disease : {{ Treatment.Disease }}</h6>
+
+    <br><br>
+    {% if files %}
+        <h3>Reports</h3>
+        {% for file in files %}
+            Name: <a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank">{{ file.name }}</a>
+            <p>Description : {{file.Description}}</p>
+        {% endfor %}
+    {% else%}
+        <h5> No Reports Shared</h5>
+    {% endif %}
+
+    <h3>Appointments</h3>
+    
+    <h3>Prescription</h3>
+    
+    {% if request.user.is_patient %}
+    <h6>{{ Treatment.Prescription }}</h6>
+    {% else %}
+        <form action="" method="POST">
+            {% csrf_token%}
+            {{ presc|crispy }}
+        </form>
+    {% endif %}
+
+    <br><br><br>
+    {% if request.user.is_patient and Treatment.is_completed %}
+        <form method="post" action="{% url 'Delete_Treatment' Treatment.id%}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Delete Treatment</button>
+        </form>    
+    {% endif %}
+
+    {% if request.user.is_doctor %}
+        {% if not Treatment.is_completed %}
+            <form method="post" action="{% url 'Complete_Treatment' Treatment.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Treatment Completed</button>
+            </form>
+        {% endif %}
+    {% endif %}
+{% endblock %}
