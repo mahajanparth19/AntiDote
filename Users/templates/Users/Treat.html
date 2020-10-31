@@ -11,7 +11,15 @@
     <br><br>
     <h1 class="heading">New Treatment Requests</h1>
     {% for Treat in new %}
-        <h3>{{ Treat.Patient.Name }} and {{ Treat.Doctor.Name }}</h3>
+        <h3>{{ Treat.Patient.Name }} 
+            {% if Treat.Doctor %}
+                and {{ Treat.Doctor.Name }}
+            {% else %}
+            : {{ Treat.Disease }}
+            <a href="{% url 'Doctor_list' Treat.id %}"> Add Doc</a> <br>
+            {% endif %}
+
+        </h3>
     {% endfor %}
     
     <br><br>

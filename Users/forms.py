@@ -75,10 +75,10 @@ class send_to_doc_Form(forms.ModelForm):
 
         
 
-# class Treatment_Form(forms.ModelForm):
-#     class Meta:
-#         model= Treatment
-#         fields = ["Doctor","Disease"]
+class Treatment_Form(forms.ModelForm):
+    class Meta:
+        model= Treatment
+        fields = ["Disease"]
     
 
 class Register_Doc(forms.ModelForm):

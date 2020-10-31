@@ -13,5 +13,8 @@
     {% if message %}
         <script>alert("{{ message }}")</script>
     {% endif %}
+    {% if alert %}
+        <script>alert("{{ alert }}")</script>
+    {% endif %}
 
 {% endblock %}

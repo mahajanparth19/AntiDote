@@ -33,6 +33,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'View_Treatment' %}">Treatments</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'create_Treat' %}">Create New</a>
+                    </li>
                 {% elif user.is_doctor %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'ActiveTreat' %}">Active Patients</a>

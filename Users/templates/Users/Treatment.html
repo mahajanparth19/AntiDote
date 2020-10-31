@@ -27,10 +27,15 @@
     {% if request.user.is_patient %}
     <h6>{{ Treatment.Prescription }}</h6>
     {% else %}
-        <form action="" method="POST">
-            {% csrf_token%}
-            {{ presc|crispy }}
-        </form>
+        <div id="Presc">
+            {% if Treatment.Prescription %}
+            {{ Treatment.Prescription }}
+            {% else %}
+            <h4>No Prescription</h4>
+            {% endif %}
+            <br>
+            <button id="Pbtn" data-val="{{ Treatment.id }}" class="btn btn-primary">Edit</button>
+        </div>
     {% endif %}
 
     <br><br><br>
@@ -49,4 +54,25 @@
             </form>
         {% endif %}
     {% endif %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function(){
+
+            function EditPresc(id){               
+            fetch(`/edit_Presc/${id}`)
+            .then(response => response.text())
+            .then(data => {
+                document.querySelector('#Presc').innerHTML = data
+            })
+            return false
+        }
+
+            document.querySelector("#Pbtn").addEventListener('click', function(event){
+                // event.preventDefault()
+                id = this.dataset.val
+                console.log(id)
+                EditPresc(id)
+            })
+        })
+    </script>
 {% endblock %}

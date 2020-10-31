@@ -1,0 +1,13 @@
+{% extends "Users/layout.html" %}
+{% load crispy_forms_tags %}
+{% block body %}
+    <br><br>
+    <h1 class="heading">Choose Doctor</h1>
+    {% for doc in Docs %}
+        <a href="{% url 'Add_doc' id doc.id %}">{{doc.Name}} <br>
+            {{ doc.Address }} <br>
+            {{ doc.Qualification }}<br>
+            {{ doc.contact }} <br>
+        </a>
+    {% endfor %}
+{% endblock %}
