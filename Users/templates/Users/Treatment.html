@@ -9,7 +9,14 @@
     {% endif %}
     <h6>Disease : {{ Treatment.Disease }}</h6>
 
-    <br><br>
+    <br>
+    <h3>Symptoms</h3>
+    <ul>
+    {% for sym in Treatment.SymptomList.all %}
+        <li>{{ sym.Name }}</li>
+    {% endfor %}
+    </ul>
+    <br>
     {% if files %}
         <h3>Reports</h3>
         {% for file in files %}

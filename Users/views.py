@@ -6,7 +6,7 @@ from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
 from .models import User,Patient,Doctor,Reports,Treatment,Disease,Specialization
-from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient, LoginUserForm, RegisterUserForm, Forgot_email_form,Forgot_Password_Form, Prescription,Treatment_Form
+from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient, LoginUserForm, RegisterUserForm, Forgot_email_form,Forgot_Password_Form, Prescription,Treatment_Form,Symptoms
 from .utils import send_email
 from django.contrib.sites.shortcuts import get_current_site
 
@@ -35,8 +35,10 @@ def create_Treat(request):
 
 
     form = Treatment_Form()
+    f = Symptoms()
     return render(request,"Users/Create_Treat.html",{
         "form" : form,
+        "f" : f,
     })
 
 @login_required
@@ -168,7 +170,11 @@ def view_new_treatments(request):
 def Treats(request,nums):
     Treat = Treatment.objects.get(pk=nums)
     if request.user.is_doctor:
-        reports = request.user.Doctor.Reports.all()
+        rep = request.user.Doctor.Reports.all()
+        reports = []
+        for r in rep:
+            if r.Patient == Treat.Patient:
+                reports.append(r)
         if Treat.Doctor != request.user.Doctor or Treat.is_completed or Treat.is_new:
             return HttpResponseRedirect(reverse("index"))
 
@@ -177,7 +183,12 @@ def Treats(request,nums):
             'files' : reports,
         })
     else:
-        reports = Reports.objects.filter(Patient=request.user.Patient)
+        rep = Treat.Doctor.Reports.all()
+        reports = []
+        for r in rep:
+            if r.Patient == Treat.Patient:
+                reports.append(r)
+        # reports = Reports.objects.filter(Patient=request.user.Patient)
         if Treat.Patient != request.user.Patient or Treat.is_new:
             return HttpResponseRedirect(reverse("index"))
 
@@ -325,11 +336,9 @@ def index(request):
 def email_forgot(request):
     if request.method == "POST":
         form = Forgot_email_form(request.POST)
-        email = form.data.get("email")
-        print(email)
+        email = form.data.get("email").lower()
         u = User.objects.filter(email=email).first()
         
-        print("here",u)
         if u is not None :
             current_site = get_current_site(request)
             send_email(current_site,u,mess="reset your Password",link="Forgot",subj = "Reset Password")
@@ -391,7 +400,7 @@ def login_view(request):
     if request.method == "POST":
         # Attempt to sign user in
         log = LoginUserForm(request.POST)
-        email = log.data.get("email")
+        email = log.data.get("email").lower()
         password = log.data.get("password")
         user = authenticate(request, email=email, password=password)
 
@@ -441,7 +450,7 @@ def reg(request):
 def register(request):
     if request.method == "POST":
         reg = RegisterUserForm(request.POST)
-        email = reg.data.get("email")
+        email = reg.data.get("email").lower()
         form = Register_Patient(request.POST)
         # Ensure password matches confirmation
         password = reg.data.get("password1")
@@ -493,7 +502,7 @@ def register_Doctor(request):
                  "d" : True,
                  "register" : reg
                  })
-        email = reg.data.get("email")
+        email = reg.data.get("email").lower()
         # Ensure password matches confirmation
         password = reg.data.get("password1")
         confirmation = reg.data.get("password2")

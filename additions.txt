@@ -14,4 +14,14 @@ if doctor denies treatment request. User should get an alert                ####
 
 password changed alert                                                      ############ done
 
-address using maps api or store latitude longitudes of all possible cities
+
+
+
+Gps coordinates of doctor during registration
+Gps coordinates of patient during seraching
+
+question , asnwer fields in model and a is_answered field
+option to answer the question
+option to delete the question if is_answered
+
+display selected symptoms  # done
