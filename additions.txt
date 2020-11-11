@@ -17,11 +17,11 @@ password changed alert                                                      ####
 
 
 
-Gps coordinates of doctor during registration
-Gps coordinates of patient during seraching
+Gps coordinates of doctor during registration                               ############ done
+Gps coordinates of patient during seraching                                 ############ done
 
 question , asnwer fields in model and a is_answered field
 option to answer the question
 option to delete the question if is_answered
 
-display selected symptoms  # done
+display selected symptoms                                                   ############ done

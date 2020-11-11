@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-# from django.contrib.gis.db import models as geomodels
+
 
 from .managers import CustomUserManager
 
@@ -50,7 +50,8 @@ class Doctor(models.Model):
     Specialization = models.ForeignKey(Specialization,on_delete=models.PROTECT,related_name="Doctors")
     contact  = models.IntegerField(null=True)
     Qualification = models.CharField(max_length=30,null=True)
-    # geometry = geomodels.PointField()
+    lat = models.DecimalField(max_digits=9, decimal_places=6,null=True,default=None)
+    lon = models.DecimalField(max_digits=9, decimal_places=6,null=True,default=None)
 
     def __str__(self):
         return self.Name
@@ -90,5 +91,7 @@ class Treatment(models.Model):
     Disease = models.ForeignKey(Disease,on_delete=models.PROTECT,related_name="Patients")
     Prescription = models.TextField(max_length=800,null=True,default = None,blank=True)
     Appointment = models.DateField(null=True,default = None,blank=True)
+    lat = models.DecimalField(max_digits=9, decimal_places=6,null=True,default=None)
+    lon = models.DecimalField(max_digits=9, decimal_places=6,null=True,default=None)
 
 

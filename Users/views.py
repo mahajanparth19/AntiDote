@@ -5,9 +5,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
-from .models import User,Patient,Doctor,Reports,Treatment,Disease,Specialization
+from .models import User,Patient,Doctor,Reports,Treatment,Disease,Specialization,Symptom
 from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient, LoginUserForm, RegisterUserForm, Forgot_email_form,Forgot_Password_Form, Prescription,Treatment_Form,Symptoms
-from .utils import send_email
+from .utils import send_email,sort_lat
 from django.contrib.sites.shortcuts import get_current_site
 
 from django.utils.encoding import force_bytes, force_text
@@ -30,6 +30,10 @@ def create_Treat(request):
         # print(form.data["Disease"])
         dis = Disease.objects.get(pk=form.data["Disease"])
         tr = Treatment.objects.create(Patient=request.user.Patient,Disease=dis,is_new=True)
+        syms = form.data.getlist("SymptomList")
+        for id in syms:
+            s = Symptom.objects.get(pk=id)
+            tr.SymptomList.add(s)
         tr.save()
         return HttpResponseRedirect(reverse("Doctor_list",args=[tr.id]))
 
@@ -59,6 +63,7 @@ def Add_doc(request,T_id,D_id):
 def Doctor_list(request,nums):
     tr = Treatment.objects.get(pk=nums)
     Docs = tr.Disease.Specialization.Doctors.all()
+    Docs = sort_lat(Docs,(tr.lat,tr.lon))
     for doc in Docs:
         print(doc.Name)
     return render(request,"USers/Doctor_list.html",{
@@ -497,6 +502,7 @@ def register_Doctor(request):
         form = Register_Doc(request.POST)
         reg = RegisterUserForm(request.POST)
         if not reg.is_valid():
+            print("h")
             return render(request,"Users/registerDoctor.html",{
                  "form" : form,
                  "d" : True,
@@ -514,6 +520,7 @@ def register_Doctor(request):
                 "register" : reg
             })
         if not form.is_valid():
+            print("h11")
             return render(request,"Users/registerDoctor.html",{
                  "form" : form,
                  "d" : True,

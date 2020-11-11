@@ -80,15 +80,21 @@ class send_to_doc_Form(forms.ModelForm):
 class Treatment_Form(forms.ModelForm):
     class Meta:
         model= Treatment
-        fields = ["Disease"]
+        fields = ["Disease","lat","lon"]
+        widgets = {
+            'lat' : forms.HiddenInput(),
+            'lon' : forms.HiddenInput()
+        }
     
 
 class Register_Doc(forms.ModelForm):
-    lat = forms.DecimalField(max_digits=9, decimal_places=6,widget = forms.TextInput(attrs={'readonly':'readonly'}))
-    lon = forms.DecimalField(max_digits=9, decimal_places=6,widget = forms.TextInput(attrs={'readonly':'readonly'}))
     class Meta:
         model=Doctor
         exclude = ['user']
+        widgets = {
+            'lat' : forms.HiddenInput(),
+            'lon' : forms.HiddenInput()
+        }
 
 
 class Register_Patient(forms.ModelForm):
