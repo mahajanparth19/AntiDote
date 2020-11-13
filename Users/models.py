@@ -94,4 +94,13 @@ class Treatment(models.Model):
     lat = models.DecimalField(max_digits=9, decimal_places=6,null=True,default=None)
     lon = models.DecimalField(max_digits=9, decimal_places=6,null=True,default=None)
 
+class QnA(models.Model):
+    Made_By = models.ForeignKey(User,on_delete=models.CASCADE,related_name="Questions")
+    Question =  models.TextField(max_length=800,null=True,default = None,blank=True)
+    Answer = models.TextField(max_length=800,null=True,default = None,blank=True)
+    Is_Answered = models.BooleanField(default=False)
+    Treatment = models.ForeignKey(Treatment,on_delete=models.CASCADE,related_name="Questions")
+    def __str__(self):
+        return self.Question
+
 

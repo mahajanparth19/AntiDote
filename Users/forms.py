@@ -1,10 +1,19 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
-from .models import User,Reports,Treatment,Doctor,Patient,Symptom
+from .models import User,Reports,Treatment,Doctor,Patient,Symptom, QnA
 from bootstrap_modal_forms.mixins import PopRequestMixin, CreateUpdateAjaxMixin
 from django.contrib.auth.password_validation import validate_password
 from django.core import validators
 
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model =  QnA
+        fields = ["Question"]
+
+class AnswerForm(forms.ModelForm):
+    class Meta:
+        model =  QnA
+        fields = ["Answer"]
 
 class CustomUserCreationForm(UserCreationForm):
 

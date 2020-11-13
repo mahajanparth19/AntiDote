@@ -45,6 +45,39 @@
         </div>
     {% endif %}
 
+
+    <br><br><br>
+    <hr>
+    {% for question in Treatment.Questions.all %}
+            Question : {{ question.Question }} <br><br>
+            {% if question.Is_Answered %}
+                Reply : {{ question.Answer }}<br><br>
+                {% if  question.Made_By == user %}
+                    <a class="btn btn-primary" href="{% url 'delete_Question' question.id %}">Delete Question</a>
+                    <br>
+                {% endif %}
+            {% else %}
+                {% if  question.Made_By != user %}
+
+                    <form action="{% url 'Add_Answer' Treatment.id question.id %}" method="POST">
+                        {% csrf_token %}
+                        {{A_Form | crispy}}
+                        <input type="submit" value="Add Question" class="btn btn-primary">
+                    </form>
+                {% endif %}
+                
+            {% endif %}
+            <hr>
+            <br>
+    {% endfor %}
+
+    <br>
+    <form action="{% url 'Add_Question' Treatment.id %}" method="POST">
+        {% csrf_token %}
+        {{Q_Form | crispy}}
+        <input type="submit" value="Add Question" class="btn btn-primary">
+    </form>
+
     <br><br><br>
     {% if request.user.is_patient and Treatment.is_completed %}
         <form method="post" action="{% url 'Delete_Treatment' Treatment.id%}">

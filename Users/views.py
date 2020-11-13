@@ -5,8 +5,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
-from .models import User,Patient,Doctor,Reports,Treatment,Disease,Specialization,Symptom
-from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient, LoginUserForm, RegisterUserForm, Forgot_email_form,Forgot_Password_Form, Prescription,Treatment_Form,Symptoms
+from .models import User,Patient,Doctor,Reports,Treatment,Disease,Specialization,Symptom,QnA
+from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient, LoginUserForm, RegisterUserForm, Forgot_email_form,Forgot_Password_Form, Prescription,Treatment_Form,Symptoms,QuestionForm, AnswerForm
 from .utils import send_email,sort_lat
 from django.contrib.sites.shortcuts import get_current_site
 
@@ -18,6 +18,51 @@ from .decorators import patient_required, doctor_required
 from django.views.decorators.http import require_http_methods
 
 # Create your views here.
+
+@login_required()
+def delete_Question(request,nums):
+    Q = QnA.objects.get(id = nums)
+    t = Q.Treatment
+    if Q.Made_By != request.user:
+        return HttpResponseRedirect(reverse("index"))
+    
+    Q.delete()
+    return HttpResponseRedirect(reverse("Treat",args=[t.id]))
+
+@login_required
+def Add_Answer(request, nums, Q_id):
+    if request.method == "POST":
+        form = AnswerForm(request.POST)
+        if not form.is_valid():
+            print("here")
+            return HttpResponseRedirect(reverse("Treat",args=[nums]))
+        
+        print(form.data.get('Question'))
+        tr = Treatment.objects.get(pk=nums)
+        Q = QnA.objects.get(id = Q_id)
+        Q.Answer = form.data.get('Answer')
+        Q.Is_Answered = True
+        Q.save()
+        return HttpResponseRedirect(reverse("Treat",args=[nums]))
+    return HttpResponseRedirect(reverse("Treat",args=[nums]))
+
+
+@login_required
+def Add_Question(request, nums):
+    if request.method == "POST":
+        form = QuestionForm(request.POST)
+        if not form.is_valid():
+            print("here")
+            return HttpResponseRedirect(reverse("Treat",args=[nums]))
+        
+        print(form.data.get('Question'))
+        tr = Treatment.objects.get(pk=nums)
+        Q = QnA.objects.create(Made_By=request.user,Question=form.data.get('Question'),Treatment=tr)
+        Q.save()
+        return HttpResponseRedirect(reverse("Treat",args=[nums]))
+    return HttpResponseRedirect(reverse("Treat",args=[nums]))
+
+
 @login_required
 @patient_required
 def create_Treat(request):
@@ -173,6 +218,8 @@ def view_new_treatments(request):
 
 @login_required
 def Treats(request,nums):
+    Q_Form = QuestionForm()
+    A_Form = AnswerForm()
     Treat = Treatment.objects.get(pk=nums)
     if request.user.is_doctor:
         rep = request.user.Doctor.Reports.all()
@@ -186,6 +233,8 @@ def Treats(request,nums):
         return render(request, 'Users/Treatment.html',{
             'Treatment' : Treat,
             'files' : reports,
+            'Q_Form' : Q_Form,
+            "A_Form" : A_Form
         })
     else:
         rep = Treat.Doctor.Reports.all()
@@ -199,7 +248,9 @@ def Treats(request,nums):
 
         return render(request, 'Users/Treatment.html',{
             'Treatment' : Treat,
-            'files' : reports
+            'files' : reports,
+            'Q_Form' : Q_Form,
+            "A_Form" : A_Form
         })
 
 @login_required()

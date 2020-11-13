@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import User,Patient,Doctor,Reports,Treatment,Disease,Specialization,Symptom
+from .models import User,Patient,Doctor,Reports,Treatment,Disease,Specialization,Symptom,QnA
 
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
@@ -37,3 +37,4 @@ admin.site.register(Treatment,SymptomAdmin)
 admin.site.register(Specialization)
 admin.site.register(Disease)
 admin.site.register(Symptom)
+admin.site.register(QnA)
