@@ -6,7 +6,7 @@ from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
 from .models import User,Patient,Doctor,Reports,Treatment,Disease,Specialization,Symptom,QnA
-from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient, LoginUserForm, RegisterUserForm, Forgot_email_form,Forgot_Password_Form, Prescription,Treatment_Form,Symptoms,QuestionForm, AnswerForm
+from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient, LoginUserForm, RegisterUserForm, Forgot_email_form,Forgot_Password_Form, Prescription,Treatment_Form,Symptoms,QuestionForm, AnswerForm, AppointmentForm
 from .utils import send_email,sort_lat
 from django.contrib.sites.shortcuts import get_current_site
 
@@ -19,15 +19,35 @@ from django.views.decorators.http import require_http_methods
 
 # Create your views here.
 
+@login_required
+@doctor_required
+def Add_Appointment(request,nums):
+    if request.method == "POST":
+        form = AppointmentForm(request.POST)
+        if not form.is_valid():
+            print("here")
+            return HttpResponseRedirect(reverse("Treat",args=[nums]))
+        
+        print(form.data.get('Appointment'))
+        tr = Treatment.objects.get(pk=nums)
+        tr.Appointment = form.data.get('Appointment')
+        tr.save()
+        return HttpResponseRedirect(reverse("Treat",args=[nums]))
+    return HttpResponseRedirect(reverse("Treat",args=[nums]))
+
+
 @login_required()
 def delete_Question(request,nums):
-    Q = QnA.objects.get(id = nums)
-    t = Q.Treatment
-    if Q.Made_By != request.user:
-        return HttpResponseRedirect(reverse("index"))
+    if request.method == "POST":
+        Q = QnA.objects.get(id = nums)
+        t = Q.Treatment
+        if Q.Made_By != request.user:
+            return HttpResponseRedirect(reverse("index"))
+        
+        Q.delete()
+        return HttpResponseRedirect(reverse("Treat",args=[t.id]))
     
-    Q.delete()
-    return HttpResponseRedirect(reverse("Treat",args=[t.id]))
+    return HttpResponseRedirect(reverse("Treat",args=[nums]))
 
 @login_required
 def Add_Answer(request, nums, Q_id):
@@ -220,6 +240,7 @@ def view_new_treatments(request):
 def Treats(request,nums):
     Q_Form = QuestionForm()
     A_Form = AnswerForm()
+    Appoint_Form = AppointmentForm()
     Treat = Treatment.objects.get(pk=nums)
     if request.user.is_doctor:
         rep = request.user.Doctor.Reports.all()
@@ -234,7 +255,8 @@ def Treats(request,nums):
             'Treatment' : Treat,
             'files' : reports,
             'Q_Form' : Q_Form,
-            "A_Form" : A_Form
+            "A_Form" : A_Form,
+            "Appoint_Form" : Appoint_Form
         })
     else:
         rep = Treat.Doctor.Reports.all()
@@ -250,7 +272,8 @@ def Treats(request,nums):
             'Treatment' : Treat,
             'files' : reports,
             'Q_Form' : Q_Form,
-            "A_Form" : A_Form
+            "A_Form" : A_Form,
+            "Appoint_Form" : Appoint_Form
         })
 
 @login_required()

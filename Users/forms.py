@@ -5,6 +5,17 @@ from bootstrap_modal_forms.mixins import PopRequestMixin, CreateUpdateAjaxMixin
 from django.contrib.auth.password_validation import validate_password
 from django.core import validators
 
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+class AppointmentForm(forms.ModelForm):
+    class Meta:
+        model =  Treatment
+        fields = ["Appointment"]
+        widgets = {
+            'Appointment': DateInput(),
+        }
+
 class QuestionForm(forms.ModelForm):
     class Meta:
         model =  QnA

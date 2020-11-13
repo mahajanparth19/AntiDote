@@ -32,4 +32,5 @@ urlpatterns = [
     path("Add_Question/<int:nums>/",views.Add_Question,name="Add_Question"),
     path("Add_Answer/<int:nums>/<int:Q_id>",views.Add_Answer,name="Add_Answer"),
     path("delete_Question/<int:nums>/",views.delete_Question,name="delete_Question"),
+    path("Add_Appointment/<int:nums>/",views.Add_Appointment,name="Add_Appointment"),
 ]

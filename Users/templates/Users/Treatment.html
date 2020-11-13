@@ -28,22 +28,35 @@
     {% endif %}
 
     <h3>Appointments</h3>
-    
-    <h3>Prescription</h3>
-    
-    {% if request.user.is_patient %}
-    <h6>{{ Treatment.Prescription }}</h6>
+    {% if Treatment.Appointment %}
+        <li>{{ Treatment.Appointment }}</li>
     {% else %}
-        <div id="Presc">
-            {% if Treatment.Prescription %}
-            {{ Treatment.Prescription }}
-            {% else %}
-            <h4>No Prescription</h4>
-            {% endif %}
-            <br>
-            <button id="Pbtn" data-val="{{ Treatment.id }}" class="btn btn-primary">Edit</button>
-        </div>
+        <h4>No Appointment</h4>
     {% endif %}
+    <br><br>
+    {% if request.user.is_doctor %}
+    <form action="{% url 'Add_Appointment' Treatment.id %}" method="POST">
+        {% csrf_token %}
+        {{Appoint_Form|crispy}}
+        <input type="submit" value="Add Appointment" class="btn btn-primary">
+    </form>
+    
+    {% endif %}
+    
+    <br><br>
+    <h3>Prescription</h3>
+    <div id="Presc">
+    {% if Treatment.Prescription %}
+        {{ Treatment.Prescription }}
+    {% else %}
+        <h4>No Prescription</h4>
+    {% endif %}
+    
+    {% if request.user.is_doctor %}     
+        <br>
+        <button id="Pbtn" data-val="{{ Treatment.id }}" class="btn btn-primary">Edit</button>
+    {% endif %}
+    </div>
 
 
     <br><br><br>
@@ -62,7 +75,7 @@
                     <form action="{% url 'Add_Answer' Treatment.id question.id %}" method="POST">
                         {% csrf_token %}
                         {{A_Form | crispy}}
-                        <input type="submit" value="Add Question" class="btn btn-primary">
+                        <input type="submit" value="Add Answer" class="btn btn-primary">
                     </form>
                 {% endif %}
                 
