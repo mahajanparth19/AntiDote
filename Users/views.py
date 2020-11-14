@@ -664,11 +664,3 @@ def mydisease(request):
         return Response(e.args[0], status.HTTP_400_BAD_REQUEST)
 
 
-def patientDisease(request):
-    if request.method == 'POST':
-        form = Symptoms(request.POST)
-        if form.is_valid():
-            pass
-    form = Symptoms()
-
-    return render(request, 'Users/Create_Treat.html', {form: form})
