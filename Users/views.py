@@ -17,25 +17,23 @@ from .token import account_activation_token
 
 from .decorators import patient_required, doctor_required
 from django.views.decorators.http import require_http_methods
-
-from models import Disease
-from serializers import DiseaseSerializers
+from django.contrib import messages
+#from models import Disease
 import pickle
 from sklearn.externals import joblib
 import json
 import pandas as pd
-from sklearn import preprocessing
+import numpy as np
+from collections import Counter
+#from sklearn import preprocessing
 from rest_framework.decorators import api_view
-from rest_framework import viewsets
-from django.core import serializers
+#from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import JsonResponse
 from rest_framework.parsers import JSONParser
 
-
 # Create your views here.
-
 @login_required()
 def delete_Question(request, nums):
     Q = QnA.objects.get(id=nums)
@@ -94,10 +92,26 @@ def create_Treat(request):
         dis = Disease.objects.get(pk=form.data["Disease"])
         tr = Treatment.objects.create(Patient=request.user.Patient, Disease=dis, is_new=True)
         syms = form.data.getlist("SymptomList")
+        print(syms)
         for id in syms:
             s = Symptom.objects.get(pk=id)
             tr.SymptomList.add(s)
         tr.save()
+        syms = [int(x) for x in syms]
+        idx = []
+        df = pd.read_csv('C:/Saumyaa/software engg/Se/Users/test.csv')
+        for col in range(len(df.columns)):
+            if col in syms:
+                idx.append(1)
+            else:
+                idx.append(0)
+        idx = np.array(idx)
+        idx = np.reshape(idx, (1, 132))
+        df1=pd.DataFrame(idx,columns=df.columns)
+        df=df.append(df1)
+        answer = mydisease(df)
+        print(answer)
+        messages.success(request, 'Predicted Disease {}'.format(answer))
         return HttpResponseRedirect(reverse("Doctor_list", args=[tr.id]))
 
     form = Treatment_Form()
@@ -648,18 +662,24 @@ def activate(request, uidb64, token):
         })
 
 
-class DiseaseView(viewsets.ModelViewSet):
-    queryset = Disease.objects.all()
-    serializer_class = DiseaseSerializers
-
-
 # @api_view(["POST"])
-def mydisease(request):
+def mydisease(df):
     try:
-        mdl_mnb = joblib.load('disease_mnb.pkl')
-        mdl_log = joblib.load('disease_log.pkl')
-        mdl_ran = joblib.load('disease_ran.pkl')
-        mdl_dt = joblib.load('disease_dt.pkl')
+        y_pred=[]
+        mdl_mnb = joblib.load('C:/Saumyaa/software engg/Se/Users/disease_mnb.pkl')
+        mdl_log = joblib.load('C:/Saumyaa/software engg/Se/Users/disease_log.pkl')
+        mdl_ran = joblib.load('C:/Saumyaa/software engg/Se/Users/disease_ran.pkl')
+        mdl_dt = joblib.load('C:/Saumyaa/software engg/Se/Users/disease_dt.pkl')
+        p1=mdl_mnb.predict(df.iloc[:, :132])
+        p2=mdl_log.predict(df.iloc[:, :132])
+        p3=mdl_ran.predict(df.iloc[:, :132])
+        p4=mdl_dt.predict(df.iloc[:, :132])
+        y_pred.append(list(p1))
+        y_pred.append(list(p2))
+        y_pred.append(list(p3))
+        y_pred.append(list(p4))
+        print("prediction",y_pred)
+        return y_pred
     except ValueError as e:
         return Response(e.args[0], status.HTTP_400_BAD_REQUEST)
 
