@@ -6,7 +6,7 @@ from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
 from .models import User,Patient,Doctor,Reports,Treatment,Disease,Specialization,Symptom,QnA
-from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient, LoginUserForm, RegisterUserForm, Forgot_email_form,Forgot_Password_Form, Prescription,Treatment_Form,Symptoms,QuestionForm, AnswerForm, AppointmentForm
+from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient, LoginUserForm, RegisterUserForm, Forgot_email_form,Forgot_Password_Form, Prescription,Symptoms,QuestionForm, AnswerForm, AppointmentForm
 from .utils import send_email,sort_lat
 from django.contrib.sites.shortcuts import get_current_site
 
@@ -102,20 +102,10 @@ def Add_Question(request, nums):
 @patient_required
 def create_Treat(request):
     if request.method == "POST":
-        form = Treatment_Form(request.POST)
-        if not form.is_valid():
-            return render(request, "Users/Create_Treat.html", {
-                "form": form,
-            })
-        # print(form.data["Disease"])
-        dis = Disease.objects.get(pk=form.data["Disease"])
-        tr = Treatment.objects.create(Patient=request.user.Patient, Disease=dis, is_new=True)
+        form = Symptoms(request.POST)
         syms = form.data.getlist("SymptomList")
         print(syms)
-        for id in syms:
-            s = Symptom.objects.get(pk=id)
-            tr.SymptomList.add(s)
-        tr.save()
+        
         syms = [int(x) for x in syms]
         idx = []
         df = pd.read_csv('Users/test.csv')
@@ -130,13 +120,19 @@ def create_Treat(request):
         df=df.append(df1)
         answer = mydisease(df)
         print(answer)
+        dis = Disease.objects.get(Name=answer.strip())
+        tr = Treatment.objects.create(Patient=request.user.Patient, Disease=dis, is_new=True)
+        tr.lat = form.data.get("lat")
+        tr.lon = form.data.get("lon")
+        for id in syms:
+            s = Symptom.objects.get(pk=id)
+            tr.SymptomList.add(s)
+        tr.save()
         messages.success(request, 'Predicted Disease {}'.format(answer))
         return HttpResponseRedirect(reverse("Doctor_list", args=[tr.id]))
 
-    form = Treatment_Form()
     f = Symptoms()
     return render(request, "Users/Create_Treat.html", {
-        "form": form,
         "f": f,
     })
 

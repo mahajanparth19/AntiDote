@@ -95,17 +95,6 @@ class send_to_doc_Form(forms.ModelForm):
                     choices.append(ob)
         self.fields["Doctors"].choices = choices
 
-        
-
-class Treatment_Form(forms.ModelForm):
-    class Meta:
-        model= Treatment
-        fields = ["Disease","lat","lon"]
-        widgets = {
-            'lat' : forms.HiddenInput(),
-            'lon' : forms.HiddenInput()
-        }
-    
 
 class Register_Doc(forms.ModelForm):
     class Meta:
@@ -130,7 +119,11 @@ class Prescription(forms.ModelForm):
 class Symptoms(forms.ModelForm):
     class Meta:
         model = Treatment
-        fields = ['SymptomList']
+        fields = ['SymptomList',"lat","lon"]
+        widgets = {
+            'lat' : forms.HiddenInput(),
+            'lon' : forms.HiddenInput()
+        }
     
     def __init__ (self, *args, **kwargs):
         super(Symptoms, self).__init__(*args, **kwargs)
