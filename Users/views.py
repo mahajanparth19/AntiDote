@@ -19,7 +19,10 @@ from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 #from models import Disease
 import pickle
+<<<<<<< HEAD
+=======
 # from sklearn.externals import joblib
+>>>>>>> master
 import joblib
 import json
 import pandas as pd
@@ -697,13 +700,34 @@ def mydisease(df):
         p2=mdl_log.predict(df.iloc[:, :132])
         p3=mdl_ran.predict(df.iloc[:, :132])
         p4=mdl_dt.predict(df.iloc[:, :132])
+<<<<<<< HEAD
+=======
         print(p1[0],str(p1))
+>>>>>>> master
         y_pred.append(p1[0])
         y_pred.append(p2[0])
         y_pred.append(p3[0])
         y_pred.append(p4[0])
+<<<<<<< HEAD
+        c=Counter(y_pred)
+        print(y_pred)
+        max=0
+        idx=0
+        c=c.most_common()
+        for itr in c:
+            if itr[1]>max:
+                max=itr[1]
+                idx=itr[0]
+        if (max==2 and len(c)==2) or max==1:
+            print("prediction", p4[0])
+            return(p4[0])
+        else:
+            print("prediction idx", idx)
+            return idx
+=======
         print("prediction",y_pred)
         return y_pred
+>>>>>>> master
     except ValueError as e:
         return Response(e.args[0], status.HTTP_400_BAD_REQUEST)
 
