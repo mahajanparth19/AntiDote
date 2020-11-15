@@ -19,6 +19,10 @@ from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 #from models import Disease
 import pickle
+<<<<<<< HEAD
+=======
+# from sklearn.externals import joblib
+>>>>>>> master
 import joblib
 import json
 import pandas as pd
@@ -111,6 +115,7 @@ def create_Treat(request):
         dis = Disease.objects.get(pk=form.data["Disease"])
         tr = Treatment.objects.create(Patient=request.user.Patient, Disease=dis, is_new=True)
         syms = form.data.getlist("SymptomList")
+        print(syms)
         for id in syms:
             s = Symptom.objects.get(pk=id)
             tr.SymptomList.add(s)
@@ -128,7 +133,7 @@ def create_Treat(request):
         df1=pd.DataFrame(idx,columns=df.columns)
         df=df.append(df1)
         answer = mydisease(df)
-      # print(answer)
+        print(answer)
         messages.success(request, 'Predicted Disease {}'.format(answer))
         return HttpResponseRedirect(reverse("Doctor_list", args=[tr.id]))
 
@@ -695,10 +700,15 @@ def mydisease(df):
         p2=mdl_log.predict(df.iloc[:, :132])
         p3=mdl_ran.predict(df.iloc[:, :132])
         p4=mdl_dt.predict(df.iloc[:, :132])
+<<<<<<< HEAD
+=======
+        print(p1[0],str(p1))
+>>>>>>> master
         y_pred.append(p1[0])
         y_pred.append(p2[0])
         y_pred.append(p3[0])
         y_pred.append(p4[0])
+<<<<<<< HEAD
         c=Counter(y_pred)
         print(y_pred)
         max=0
@@ -714,6 +724,10 @@ def mydisease(df):
         else:
             print("prediction idx", idx)
             return idx
+=======
+        print("prediction",y_pred)
+        return y_pred
+>>>>>>> master
     except ValueError as e:
         return Response(e.args[0], status.HTTP_400_BAD_REQUEST)
 
