@@ -6,6 +6,7 @@ from django.utils import timezone
 
 
 from .managers import CustomUserManager
+from .validators import validate_date
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
@@ -90,7 +91,7 @@ class Treatment(models.Model):
     SymptomList = models.ManyToManyField(Symptom,blank=True)
     Disease = models.ForeignKey(Disease,on_delete=models.PROTECT,related_name="Patients")
     Prescription = models.TextField(max_length=800,null=True,default = None,blank=True)
-    Appointment = models.DateField(null=True,default = None,blank=True)
+    Appointment = models.DateField(null=True,default = None,blank=True, validators=[validate_date])
     lat = models.DecimalField(max_digits=9, decimal_places=6,null=True,default=None)
     lon = models.DecimalField(max_digits=9, decimal_places=6,null=True,default=None)
 
