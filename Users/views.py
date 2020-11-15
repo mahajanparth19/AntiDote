@@ -19,7 +19,8 @@ from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 #from models import Disease
 import pickle
-from sklearn.externals import joblib
+# from sklearn.externals import joblib
+import joblib
 import json
 import pandas as pd
 import numpy as np
@@ -118,7 +119,7 @@ def create_Treat(request):
         tr.save()
         syms = [int(x) for x in syms]
         idx = []
-        df = pd.read_csv('C:/Saumyaa/software engg/Se/Users/test.csv')
+        df = pd.read_csv('Users/test.csv')
         for col in range(len(df.columns)):
             if col in syms:
                 idx.append(1)
@@ -688,18 +689,19 @@ def activate(request, uidb64, token):
 def mydisease(df):
     try:
         y_pred=[]
-        mdl_mnb = joblib.load('C:/Saumyaa/software engg/Se/Users/disease_mnb.pkl')
-        mdl_log = joblib.load('C:/Saumyaa/software engg/Se/Users/disease_log.pkl')
-        mdl_ran = joblib.load('C:/Saumyaa/software engg/Se/Users/disease_ran.pkl')
-        mdl_dt = joblib.load('C:/Saumyaa/software engg/Se/Users/disease_dt.pkl')
+        mdl_mnb = joblib.load('Users/disease_mnb.pkl')
+        mdl_log = joblib.load('Users/disease_log.pkl')
+        mdl_ran = joblib.load('Users/disease_ran.pkl')
+        mdl_dt = joblib.load('Users/disease_dt.pkl')
         p1=mdl_mnb.predict(df.iloc[:, :132])
         p2=mdl_log.predict(df.iloc[:, :132])
         p3=mdl_ran.predict(df.iloc[:, :132])
         p4=mdl_dt.predict(df.iloc[:, :132])
-        y_pred.append(list(p1))
-        y_pred.append(list(p2))
-        y_pred.append(list(p3))
-        y_pred.append(list(p4))
+        print(p1[0],str(p1))
+        y_pred.append(p1[0])
+        y_pred.append(p2[0])
+        y_pred.append(p3[0])
+        y_pred.append(p4[0])
         print("prediction",y_pred)
         return y_pred
     except ValueError as e:
