@@ -13,16 +13,8 @@
         <h3>Selected Symptoms</h3>
         <div id="here"></div>
     </div>
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-
     <br><br>
-
+        <!--{{form|crispy}}-->
         <input type="submit" value="Submit" class="btn btn-primary"/>
     </form>
 

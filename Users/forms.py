@@ -46,8 +46,7 @@ class LoginUserForm(forms.ModelForm):
         fields = ['email','password'] 
 
 class RegisterUserForm(forms.ModelForm):
-    # password1 = forms.CharField(widget=forms.PasswordInput(),validators=[validate_password]) #uncomment when using password validation
-    password1 = forms.CharField(widget=forms.PasswordInput())
+    password1 = forms.CharField(widget=forms.PasswordInput(),validators=[validate_password]) #uncomment when using password validation
     password2 = forms.CharField(widget=forms.PasswordInput())
     class Meta:
         model = User
@@ -59,8 +58,7 @@ class Forgot_email_form(forms.ModelForm):
         fields = ['email']
 
 class Forgot_Password_Form(forms.ModelForm):
-    # password1 = forms.CharField(widget=forms.PasswordInput(),validators=[validate_password]) # to use django validation
-    password1 = forms.CharField(widget=forms.PasswordInput())
+    password1 = forms.CharField(widget=forms.PasswordInput(),validators=[validate_password]) # to use django validation
     password2 = forms.CharField(widget=forms.PasswordInput())
     class Meta:
         model = User
@@ -87,7 +85,6 @@ class send_to_doc_Form(forms.ModelForm):
         super(send_to_doc_Form, self).__init__(*args, **kwargs)
         self.fields["Doctors"].widget = forms.widgets.CheckboxSelectMultiple()
         choices = []
-        # choices = [(d.Doctor.id,d.Doctor.Name) for d in Patient.Treatments.all()]
         for treat in Patient.Treatments.all():
             if treat.is_active:
                 ob = (treat.Doctor.id,treat.Doctor.Name)
@@ -119,7 +116,7 @@ class Prescription(forms.ModelForm):
 class Symptoms(forms.ModelForm):
     class Meta:
         model = Treatment
-        fields = ['SymptomList',"lat","lon"]
+        fields = ['SymptomList', 'lat', 'lon']
         widgets = {
             'lat' : forms.HiddenInput(),
             'lon' : forms.HiddenInput()

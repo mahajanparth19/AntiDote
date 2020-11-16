@@ -53,16 +53,15 @@ def Add_Appointment(request,nums):
 
 @login_required()
 def delete_Question(request,nums):
-    if request.method == "POST":
-        Q = QnA.objects.get(id = nums)
-        t = Q.Treatment
-        if Q.Made_By != request.user:
-            return HttpResponseRedirect(reverse("index"))
-        
-        Q.delete()
-        return HttpResponseRedirect(reverse("Treat",args=[t.id]))
+    Q = QnA.objects.get(id = nums)
+    t = Q.Treatment
+    print(t.id)
+    if Q.Made_By != request.user:
+        return HttpResponseRedirect(reverse("index"))
     
-    return HttpResponseRedirect(reverse("Treat",args=[nums]))
+    Q.delete()
+    return HttpResponseRedirect(reverse("Treat",args=[t.id]))
+    
 
 @login_required
 def Add_Answer(request, nums, Q_id):
@@ -102,10 +101,8 @@ def Add_Question(request, nums):
 @patient_required
 def create_Treat(request):
     if request.method == "POST":
-        form = Symptoms(request.POST)
-        syms = form.data.getlist("SymptomList")
-        print(syms)
-        
+        f = Symptoms(request.POST)
+        syms = f.data.getlist("SymptomList")
         syms = [int(x) for x in syms]
         idx = []
         df = pd.read_csv('Users/test.csv')
@@ -118,17 +115,16 @@ def create_Treat(request):
         idx = np.reshape(idx, (1, 132))
         df1=pd.DataFrame(idx,columns=df.columns)
         df=df.append(df1)
-        answer = mydisease(df)
-        print(answer)
-        dis = Disease.objects.get(Name=answer.strip())
+        answer = mydisease(df).strip()
+        dis = Disease.objects.get(Name=answer)
         tr = Treatment.objects.create(Patient=request.user.Patient, Disease=dis, is_new=True)
-        tr.lat = form.data.get("lat")
-        tr.lon = form.data.get("lon")
         for id in syms:
             s = Symptom.objects.get(pk=id)
             tr.SymptomList.add(s)
+        tr.lat = f.data.get("lat")
+        tr.lon = f.data.get("lon")
         tr.save()
-        messages.success(request, 'Predicted Disease {}'.format(answer))
+        messages.success(request, 'The disease predicted is {}'.format(answer))
         return HttpResponseRedirect(reverse("Doctor_list", args=[tr.id]))
 
     f = Symptoms()
@@ -400,7 +396,6 @@ def send(request, nums):
 @login_required()
 @patient_required
 def showfile(request):
-    # lastfile = request.user.Patient.Reports
     form = FileForm(request.POST or None, request.FILES or None)
     if form.is_valid():
         form.save(request.user)  # replace by patient
@@ -408,8 +403,6 @@ def showfile(request):
     lastfile = Reports.objects.filter(Patient=request.user.Patient)
 
     send_form = send_to_doc_Form(request.user.Patient)
-    # treat = Treatment.objects.filter(Patient=request.user.Patient)
-    # send_form.fields['Doctors'].queryset = (doc.Doctor for doc in treat )
 
     context = None
     if lastfile:
@@ -579,7 +572,7 @@ def register(request):
 
         # Attempt to create new user
         try:
-            user = User.objects.create_user(email, password, is_active=True,
+            user = User.objects.create_user(email, password, is_active=False,
                                             is_patient=True)  ### change is active to false
             user.save()
             p = form.save(commit=False)
@@ -635,7 +628,7 @@ def register_Doctor(request):
 
         # Attempt to create new user
         try:
-            user = User.objects.create_user(email, password, is_active=True,
+            user = User.objects.create_user(email, password, is_active=False,
                                             is_doctor=True)  ### change is active to false
             user.save()
             d = form.save(commit=False)
@@ -692,13 +685,11 @@ def mydisease(df):
         p2=mdl_log.predict(df.iloc[:, :132])
         p3=mdl_ran.predict(df.iloc[:, :132])
         p4=mdl_dt.predict(df.iloc[:, :132])
-        print(p1[0],str(p1))
         y_pred.append(p1[0])
         y_pred.append(p2[0])
         y_pred.append(p3[0])
         y_pred.append(p4[0])
         c=Counter(y_pred)
-        print(y_pred)
         max=0
         idx=0
         c=c.most_common()
@@ -707,10 +698,8 @@ def mydisease(df):
                 max=itr[1]
                 idx=itr[0]
         if (max==2 and len(c)==2) or max==1:
-            print("prediction", p4[0])
             return(p4[0])
         else:
-            print("prediction idx", idx)
             return idx
     except ValueError as e:
         return Response(e.args[0], status.HTTP_400_BAD_REQUEST)

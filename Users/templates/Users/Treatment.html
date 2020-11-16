@@ -85,11 +85,13 @@
     {% endfor %}
 
     <br>
+    {% if not Treatment.is_completed %}
     <form action="{% url 'Add_Question' Treatment.id %}" method="POST">
         {% csrf_token %}
         {{Q_Form | crispy}}
         <input type="submit" value="Add Question" class="btn btn-primary">
     </form>
+    {% endif %}
 
     <br><br><br>
     {% if request.user.is_patient and Treatment.is_completed %}
