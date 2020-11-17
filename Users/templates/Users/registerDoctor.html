@@ -3,7 +3,7 @@
 
 {% block body %}
 
-    <h2>Register</h2>
+    <h2 align="center">Register</h2>
 
     {% if message %}
         <div>{{ message }}</div>
@@ -11,7 +11,10 @@
 
     <form action = "{% if d %} {% url 'registerDoctor' %} {% else %} {% url 'register' %} {% endif %} " method="post">
         {% csrf_token %}
-        {{ register|crispy }}
+         <div class="col-10">
+        {{ register.email|as_crispy_field}}
+        {{ register.password1|as_crispy_field}}
+        {{ register.password2|as_crispy_field}}
 
         <input type="radio" class="radio" id="patient" checked name="Type" data-value=1>
         <label for="patient">Patient</label>
@@ -19,15 +22,22 @@
         <label for="doctor">Doctor</label><br>
 
         <div id="form">
-            {{ form|crispy }}
+           
+            {{ form.Name|as_crispy_field}}
+            {{ form.Age|as_crispy_field}}
+            {{ form.Address|as_crispy_field}}
+            {{ form.Gender|as_crispy_field}}
+            
         </div>
+        
 
         <input class="btn btn-primary" type="submit" value="Register" class="btn btn-primary">
 
+</div>
     </form>
-
-    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
-
+    &nbsp;&nbsp;&nbsp;Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+<br>
+<br>
     <script>
         function showForm(id){
             if(id == 1)

@@ -516,8 +516,7 @@ def login_view(request):
             link = request.POST["next"]
             if link != "None":
                 return HttpResponseRedirect(link)
-
-            return HttpResponseRedirect(reverse("index"))
+            return HttpResponseRedirect(reverse("base"))
         else:
             return render(request, "Users/login.html", {
                 "message": "Invalid username and/or password.",
@@ -668,10 +667,13 @@ def activate(request, uidb64, token):
             "message": "Thank you for your email confirmation. Now you can login your account."
         })
     else:
-        return render(request, "Users/confirmation.html", {
-            "message": "Activation link is invalid!"
-        })
+        return render(request, "Users/confirmation.html",{
+                "message" : "Activation link is invalid!" 
+            })
+    
 
+def base(request):
+    return render(request,'Users/base.html')
 
 # @api_view(["POST"])
 def mydisease(df):

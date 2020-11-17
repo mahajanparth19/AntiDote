@@ -40,14 +40,23 @@
         {{form|crispy}}
         <input type="submit" value="Save Changes" class="btn btn-primary"/>
     </form>
-    
 
-    {% if message %}
-        <script>alert("{{ message }}")</script>
-    {% endif %}
-    {% if alert %}
-        <script>alert("{{ alert }}")</script>
-    {% endif %}
+    <h1 class="heading">Edit Profile</h1>
+    <br><br>
+        <a href="{% url 'Change_Password' %}">Change Password</a>
+        <br>
+        <br>
+        <form action="", method="POST">
+            {% csrf_token %}
+            {{form|crispy}}
+            <input type="submit" value="Save Changes" class="btn btn-primary"/>
+        </form>
+        {% if message %}
+            <script>alert("{{ message }}")</script>
+        {% endif %}
+        {% if alert %}
+            <script>alert("{{ alert }}")</script>
+        {% endif %}
 
 
     
