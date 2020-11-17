@@ -155,7 +155,7 @@ def Doctor_list(request, nums):
         print(doc.Name)
     return render(request, "USers/Doctor_list.html", {
         "Docs": Docs,
-        "id": tr.id,
+        "tr": tr,
     })
 
 

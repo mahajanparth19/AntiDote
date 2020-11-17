@@ -8,10 +8,15 @@
         <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
         {% endfor %}
     </ul>
+    {% else %}
+        Predicted Disease is {{ tr.Disease.Name }}
     {% endif %}
+    <br><br>
+    Don't want to select a Doctor <a href="{% url 'Delete_Treatment' tr.id %}">click here</a>
+
     <h1 class="heading">Choose Doctor</h1>
     {% for doc in Docs %}
-        <a href="{% url 'Add_doc' id doc.id %}">{{doc.Name}} <br>
+        <a href="{% url 'Add_doc' tr.id doc.id %}">{{doc.Name}} <br>
             {{ doc.Address }} <br>
             {{ doc.Qualification }}<br>
             {{ doc.contact }} <br>
