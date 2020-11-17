@@ -9,5 +9,8 @@
         <input type="submit" value="{{name}}" class="btn btn-primary"/>
     </form>
 
-    {% if error %} <h6>{{ error }}</h6> {% endif%}
+
+    {% if alert %}
+        <script>alert("{{ alert }}")</script>
+    {% endif %}
 {% endblock %}

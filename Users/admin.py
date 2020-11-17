@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import User,Patient,Doctor,Reports,Treatment,Disease,Specialization
+from .models import User,Patient,Doctor,Reports,Treatment,Disease,Specialization,Symptom
 
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
@@ -27,10 +27,14 @@ class CustomUserAdmin(UserAdmin):
 class ReportAdmin(admin.ModelAdmin):
     filter_horizontal = ("Doctors",)
 
+class SymptomAdmin(admin.ModelAdmin):
+    filter_horizontal = ("SymptomList",)
+
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(Patient)
 admin.site.register(Doctor)
 admin.site.register(Reports,ReportAdmin)
-admin.site.register(Treatment)
+admin.site.register(Treatment,SymptomAdmin)
 admin.site.register(Specialization)
 admin.site.register(Disease)
+admin.site.register(Symptom)

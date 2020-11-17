@@ -42,8 +42,10 @@
         function showForm(id){
             if(id == 1)
                 document.querySelector('form').action = "{% url 'register' %}"
-            else
-                document.querySelector('form').action = "{% url 'registerDoctor' %}"                
+            else{
+                    document.querySelector('form').action = "{% url 'registerDoctor' %}"
+                    getLocation()    
+                }             
 
             fetch(`rform/${id}`)
             .then(response => response.text())
@@ -53,12 +55,30 @@
         }
         document.addEventListener("DOMContentLoaded", function(){
             document.querySelectorAll('.radio').forEach(function(radio){
+                if(radio.checked == true && radio.dataset.value != 1){
+                    showForm(radio.dataset.value)
+                    getLocation()
+                }
                 radio.onclick = function(){
                         console.log(this.dataset.value)
                         showForm(this.dataset.value)
+                        
                 }
             })
         })
+        
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            document.querySelector("input[name=lat]").value = position.coords.latitude;
+            document.querySelector("input[name=lon]").value = position.coords.longitude;
+        }
 
     </script>
 {% endblock %}

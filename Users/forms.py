@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
-from .models import User,Reports,Treatment,Doctor,Patient
+from .models import User,Reports,Treatment,Doctor,Patient,Symptom
 from bootstrap_modal_forms.mixins import PopRequestMixin, CreateUpdateAjaxMixin
 from django.contrib.auth.password_validation import validate_password
 from django.core import validators
@@ -70,18 +70,22 @@ class send_to_doc_Form(forms.ModelForm):
         # choices = [(d.Doctor.id,d.Doctor.Name) for d in Patient.Treatments.all()]
         for treat in Patient.Treatments.all():
             if treat.is_active:
-                choices.append((treat.Doctor.id,treat.Doctor.Name))
+                ob = (treat.Doctor.id,treat.Doctor.Name)
+                if ob not in choices:
+                    choices.append(ob)
         self.fields["Doctors"].choices = choices
 
         
 
-# class Treatment_Form(forms.ModelForm):
-#     class Meta:
-#         model= Treatment
-#         fields = ["Doctor","Disease"]
+class Treatment_Form(forms.ModelForm):
+    class Meta:
+        model= Treatment
+        fields = ["Disease"]
     
 
 class Register_Doc(forms.ModelForm):
+    lat = forms.DecimalField(max_digits=9, decimal_places=6,widget = forms.TextInput(attrs={'readonly':'readonly'}))
+    lon = forms.DecimalField(max_digits=9, decimal_places=6,widget = forms.TextInput(attrs={'readonly':'readonly'}))
     class Meta:
         model=Doctor
         exclude = ['user']
@@ -96,3 +100,22 @@ class Prescription(forms.ModelForm):
     class Meta:
         model = Treatment
         fields = ['Prescription']
+
+class Symptoms(forms.ModelForm):
+    class Meta:
+        model = Treatment
+        fields = ['SymptomList']
+    
+    def __init__ (self, *args, **kwargs):
+        super(Symptoms, self).__init__(*args, **kwargs)
+        self.fields["SymptomList"].widget = forms.widgets.CheckboxSelectMultiple()
+        l = Symptom.objects.all()
+        choices = []
+        for ob in l:
+            choices.append((ob.id,ob.Name))
+        choices.sort(key=self.func)
+        self.fields["SymptomList"].choices = choices
+
+    
+    def func(self,a):
+        return a[1]

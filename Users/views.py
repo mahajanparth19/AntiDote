@@ -5,8 +5,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 
-from .models import User,Patient,Doctor,Reports,Treatment
-from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient, LoginUserForm, RegisterUserForm, Forgot_email_form,Forgot_Password_Form, Prescription
+from .models import User,Patient,Doctor,Reports,Treatment,Disease,Specialization
+from .forms import FileForm , send_to_doc_Form,Register_Doc,Register_Patient, LoginUserForm, RegisterUserForm, Forgot_email_form,Forgot_Password_Form, Prescription,Treatment_Form,Symptoms
 from .utils import send_email
 from django.contrib.sites.shortcuts import get_current_site
 
@@ -18,6 +18,72 @@ from .decorators import patient_required, doctor_required
 from django.views.decorators.http import require_http_methods
 
 # Create your views here.
+@login_required
+@patient_required
+def create_Treat(request):
+    if request.method == "POST":
+        form = Treatment_Form(request.POST)
+        if not form.is_valid():
+            return render(request,"Users/Create_Treat.html",{
+                "form" : form,
+            })
+        # print(form.data["Disease"])
+        dis = Disease.objects.get(pk=form.data["Disease"])
+        tr = Treatment.objects.create(Patient=request.user.Patient,Disease=dis,is_new=True)
+        tr.save()
+        return HttpResponseRedirect(reverse("Doctor_list",args=[tr.id]))
+
+
+    form = Treatment_Form()
+    f = Symptoms()
+    return render(request,"Users/Create_Treat.html",{
+        "form" : form,
+        "f" : f,
+    })
+
+@login_required
+@patient_required
+def Add_doc(request,T_id,D_id):
+    tr = Treatment.objects.get(pk=T_id)
+    doc = Doctor.objects.get(pk=D_id)
+    if tr.Patient != request.user.Patient or not tr.is_new:
+        return HttpResponseRedirect(reverse("index"))
+    tr.Doctor = doc
+    tr.save()
+    return HttpResponseRedirect(reverse("View_Treatment"))
+
+
+
+@login_required
+@patient_required
+def Doctor_list(request,nums):
+    tr = Treatment.objects.get(pk=nums)
+    Docs = tr.Disease.Specialization.Doctors.all()
+    for doc in Docs:
+        print(doc.Name)
+    return render(request,"USers/Doctor_list.html",{
+        "Docs" : Docs,
+        "id" : tr.id,
+    })
+
+
+@login_required
+@doctor_required
+def edit_Presc(request,nums):
+    Tr = Treatment.objects.get(pk=nums)
+    if request.method == "POST":
+        if request.user.Doctor == Tr.Doctor :
+            form = Prescription(request.POST,instance=Tr)
+            form.save()
+        return HttpResponseRedirect(reverse("Treat",args=[nums]))
+    
+    if request.user.Doctor == Tr.Doctor:
+        form = Prescription(instance=Tr)
+        return render(request,"Users/presc.html",{
+            "presc" : form,
+            "id" : Tr.id
+        })
+  
 
 def Change_Password(request):
     if request.method == "POST":
@@ -27,15 +93,20 @@ def Change_Password(request):
             "message" : "Change Passsword",
             "form" : form,
             "name" : "Change Password",
-            "error" : "Passwords Should Match"
+            "alert" : "Passwords Should Match"
         })
         else:
             request.user.set_password(form.data.get('password1'))
             request.user.save()
+            login(request, request.user)
             # return HttpResponseRedirect(reverse("login"))
-            return render(request, "Users/confirmation.html",{
-                "message" : "Password Changed Succesfully. Now you can login your account." 
+            return render(request, "Users/forgot.html",{
+                "message" : "Change Passsword",
+                "form" : form,
+                "name" : "Change Password",
+                "alert" : "Password Changed Succesfully"
             })
+            
 
     form = Forgot_Password_Form()
     return render(request, "Users/forgot.html",{
@@ -99,18 +170,25 @@ def view_new_treatments(request):
 def Treats(request,nums):
     Treat = Treatment.objects.get(pk=nums)
     if request.user.is_doctor:
-        reports = request.user.Doctor.Reports.all()
+        rep = request.user.Doctor.Reports.all()
+        reports = []
+        for r in rep:
+            if r.Patient == Treat.Patient:
+                reports.append(r)
         if Treat.Doctor != request.user.Doctor or Treat.is_completed or Treat.is_new:
             return HttpResponseRedirect(reverse("index"))
 
-        form = Prescription(instance=Treat)
         return render(request, 'Users/Treatment.html',{
             'Treatment' : Treat,
             'files' : reports,
-            'presc' : form
         })
     else:
-        reports = Reports.objects.filter(Patient=request.user.Patient)
+        rep = Treat.Doctor.Reports.all()
+        reports = []
+        for r in rep:
+            if r.Patient == Treat.Patient:
+                reports.append(r)
+        # reports = Reports.objects.filter(Patient=request.user.Patient)
         if Treat.Patient != request.user.Patient or Treat.is_new:
             return HttpResponseRedirect(reverse("index"))
 
@@ -258,11 +336,9 @@ def index(request):
 def email_forgot(request):
     if request.method == "POST":
         form = Forgot_email_form(request.POST)
-        email = form.data.get("email")
-        print(email)
+        email = form.data.get("email").lower()
         u = User.objects.filter(email=email).first()
         
-        print("here",u)
         if u is not None :
             current_site = get_current_site(request)
             send_email(current_site,u,mess="reset your Password",link="Forgot",subj = "Reset Password")
@@ -324,7 +400,7 @@ def login_view(request):
     if request.method == "POST":
         # Attempt to sign user in
         log = LoginUserForm(request.POST)
-        email = log.data.get("email")
+        email = log.data.get("email").lower()
         password = log.data.get("password")
         user = authenticate(request, email=email, password=password)
 
@@ -337,7 +413,7 @@ def login_view(request):
             if link != "None":
                 return HttpResponseRedirect(link)
             
-            return HttpResponseRedirect(reverse("index"))
+            return HttpResponseRedirect(reverse("base"))
         else:   
             return render(request, "Users/login.html", {
                 "message": "Invalid username and/or password.",
@@ -374,7 +450,7 @@ def reg(request):
 def register(request):
     if request.method == "POST":
         reg = RegisterUserForm(request.POST)
-        email = reg.data.get("email")
+        email = reg.data.get("email").lower()
         form = Register_Patient(request.POST)
         # Ensure password matches confirmation
         password = reg.data.get("password1")
@@ -426,7 +502,7 @@ def register_Doctor(request):
                  "d" : True,
                  "register" : reg
                  })
-        email = reg.data.get("email")
+        email = reg.data.get("email").lower()
         # Ensure password matches confirmation
         password = reg.data.get("password1")
         confirmation = reg.data.get("password2")
@@ -488,4 +564,7 @@ def activate(request, uidb64, token):
         return render(request, "Users/confirmation.html",{
                 "message" : "Activation link is invalid!" 
             })
-        
+    
+
+def base(request):
+    return render(request,'Users/base.html')

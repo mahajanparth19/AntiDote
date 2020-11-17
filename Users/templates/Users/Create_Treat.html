@@ -1,0 +1,66 @@
+{% extends "Users/layout.html" %}
+{% load crispy_forms_tags %}
+{% block body %}
+
+    <div style=" height: 32vmax ;">
+        <div style="width: 80vh ; float: left; overflow-y : scroll ; height: 100%;">
+            {{ f|crispy }}
+        </div>
+
+        <h3>Selected Symptoms</h3>
+        <div id="here"></div>
+    </div>    
+
+    <br><br>
+    <h1 class="heading">Select Disease</h1>
+    <form action="", method="POST">
+        {% csrf_token %}
+        {{form|crispy}}
+        <input type="submit" value="Submit" class="btn btn-primary"/>
+    </form>
+
+    <script>
+        var checklist = []
+        function func(check){
+            if(check.checked){
+                name = (document.querySelector(`label[for=${check.id}]`).innerHTML).trim()
+                if(checklist.length == 5){
+                    check.checked = false
+                    alert("Cannot Select More Than 5");
+                }
+                else{
+                    checklist.push({id : check.value, name : name})
+                }
+            }
+            else{
+                name = (document.querySelector(`label[for=${check.id}]`).innerHTML).trim()
+                i = checklist.findIndex(a => a.id == check.value)
+                if (i > -1) {
+                    checklist.splice(i, 1);
+                }
+            }
+
+            // console.log(checklist)
+            li = []
+            checklist.forEach((ele) => {
+                li.push(ele.name)
+            })
+            li = li.sort()
+            text = "";
+            for(i=0;i<li.length;i++){
+                text = text + "<br>" + li[i]
+            }
+            document.querySelector("#here").innerHTML = text
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll('input[type=checkbox]').forEach(check => {
+                check.checked = false;
+                check.addEventListener("change", function() {
+                func(check)
+                })
+            });
+            
+        })
+    </script>
+{% endblock %}

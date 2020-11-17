@@ -50,7 +50,12 @@
   <body>
     
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-     <a class="navbar-brand" href="{% url 'index' %}">
+        {% if user.is_authenticated %}
+     <a class="navbar-brand" href="{% url 'base' %}">
+      {% else %}
+      <a class="navbar-brand" href="{% url 'index' %}">
+      {% endif %}
+
      <img src="{% static 'users2/logo.png' %}" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
     </a>
 
@@ -70,6 +75,10 @@
 
       <li class="nav-item">
         <a class="nav-link" href="{% url 'View_Treatment' %}">Treatments</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'create_Treat' %}">Create New</a>
       </li>
 
       {% elif user.is_doctor %}
@@ -103,17 +112,33 @@
 
 </nav>
 
-<div>
+<!-- <div>
  {% if user.is_authenticated %}
                 {% if user.is_patient %}
                     (Signed in as <strong>{{ user.Patient.Name }}</strong>.)
-                {% else %}
-                    (Signed in as <strong>{{ user.Doctor.Name }}</strong>.)
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'reports' %}">Reports</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'View_Treatment' %}">Treatments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'create_Treat' %}">Create New</a>
+                    </li>
+                {% elif user.is_doctor %}
+                (Signed in as <strong>{{ user.Doctor.Name }}</strong>.)
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'ActiveTreat' %}">Active Patients</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'NewTreat' %}">New Requests</a>
+                    </li>   
                 {% endif %}
             {% else %}
                 (Not signed in.)
     {% endif %}
-</div>
+</div> -->
 <br></br>
 
 <div class="center">

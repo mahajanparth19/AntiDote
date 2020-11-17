@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+# from django.contrib.gis.db import models as geomodels
 
 from .managers import CustomUserManager
 
@@ -49,6 +50,7 @@ class Doctor(models.Model):
     Specialization = models.ForeignKey(Specialization,on_delete=models.PROTECT,related_name="Doctors")
     contact  = models.IntegerField(null=True)
     Qualification = models.CharField(max_length=30,null=True)
+    # geometry = geomodels.PointField()
 
     def __str__(self):
         return self.Name
@@ -61,25 +63,32 @@ class Reports(models.Model):
     Description = models.CharField(max_length=500)
     Patient = models.ForeignKey(Patient,on_delete=models.CASCADE,related_name="Reports")
     filepath= models.FileField(upload_to='files/', null=True, verbose_name="")
-    Doctors = models.ManyToManyField(Doctor,related_name="Reports",null=True,blank=True)
-    
+    Doctors = models.ManyToManyField(Doctor,related_name="Reports",blank=True)
     def __str__(self):
         return self.name + ": " + str(self.filepath)
 
 class Disease(models.Model):
     Name = models.CharField(max_length=100,null=True,blank=True,default = None)
-    Specialization = models.ForeignKey(Specialization,on_delete=models.CASCADE,related_name="Diseases")
+    Specialization = models.ForeignKey(Specialization,on_delete=models.PROTECT,related_name="Diseases")
 
     def __str__(self):
         return self.Name
 
+class Symptom(models.Model):
+    Name = models.CharField(max_length=100,null=True,blank=True,default = None)
+    def __str__(self):
+        return self.Name
+
+
 class Treatment(models.Model):
     Patient = models.ForeignKey(Patient,on_delete=models.CASCADE,related_name="Treatments")
-    Doctor = models.ForeignKey(Doctor,related_name="Treatments",null=True,on_delete=models.CASCADE)
+    Doctor = models.ForeignKey(Doctor,related_name="Treatments",null=True,on_delete=models.SET_NULL)
     is_active = models.BooleanField(default=False)
     is_new = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)
+    SymptomList = models.ManyToManyField(Symptom,blank=True)
     Disease = models.ForeignKey(Disease,on_delete=models.PROTECT,related_name="Patients")
     Prescription = models.TextField(max_length=800,null=True,default = None,blank=True)
     Appointment = models.DateField(null=True,default = None,blank=True)
+
 

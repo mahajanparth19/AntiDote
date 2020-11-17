@@ -39,8 +39,15 @@
   <body class="text-center">
     <form class="form-signin" action="{% url 'login' %}" method="post">
          {% csrf_token %}
-  <a href="{% url 'index' %}">
-    <img class="mb-4" src="{% static 'users2/logo.png' %}" alt="" width="72" height="72">
+
+         {% if user.is_authenticated %}
+     <a href="{% url 'base' %}">
+       <img class="mb-4" src="{% static 'users2/logo.png' %}" alt="" width="72" height="72">
+      {% else %}
+      <a href="{% url 'index' %}">
+         <img class="mb-4" src="{% static 'users2/logo.png' %}" alt="" width="72" height="72">
+      {% endif %}
+   
   </a>
 
   <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
