@@ -68,16 +68,17 @@
         })
         
         function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition);
-            } else {
-                alert("Geolocation is not supported by this browser.");
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition);
+                } else {
+                    alert("Geolocation is not supported by this browser.");
             }
         }
 
         function showPosition(position) {
-            document.querySelector("input[name=lat]").value = position.coords.latitude;
-            document.querySelector("input[name=lon]").value = position.coords.longitude;
+            document.querySelector("input[name=lat]").value = (position.coords.latitude).toFixed(6);
+            document.querySelector("input[name=lon]").value = (position.coords.longitude).toFixed(6);
+            alert(`Coords are: ${(position.coords.latitude).toFixed(6)}  ${(position.coords.longitude).toFixed(6)}`);
         }
 
     </script>

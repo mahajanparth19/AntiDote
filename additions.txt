@@ -2,7 +2,7 @@ treatment display                                                           ####
 
 add prescription                                                            ############ done
 
-add appoinment
+add appoinment                                                              ############ done
 
 change/ forgot password                                                     ############ done
 
@@ -17,11 +17,16 @@ password changed alert                                                      ####
 
 
 
-Gps coordinates of doctor during registration
-Gps coordinates of patient during seraching
+Gps coordinates of doctor during registration                               ############ done
+Gps coordinates of patient during seraching                                 ############ done
 
-question , asnwer fields in model and a is_answered field
-option to answer the question
-option to delete the question if is_answered
+question , asnwer fields in model and a is_answered field                   ############ done
+option to answer the question                                               ############ done
+option to delete the question if is_answered                                ############ done
 
-display selected symptoms  # done
+display selected symptoms                                                   ############ done
+
+
+Store Files on Google Drive
+
+Https security

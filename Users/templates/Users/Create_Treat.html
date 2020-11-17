@@ -2,20 +2,19 @@
 {% load crispy_forms_tags %}
 {% block body %}
 
+    
     <div style=" height: 32vmax ;">
         <div style="width: 80vh ; float: left; overflow-y : scroll ; height: 100%;">
+            <form action="", method="POST">
+                {% csrf_token %}
             {{ f|crispy }}
         </div>
 
         <h3>Selected Symptoms</h3>
         <div id="here"></div>
-    </div>    
-
+    </div>
     <br><br>
-    <h1 class="heading">Select Disease</h1>
-    <form action="", method="POST">
-        {% csrf_token %}
-        {{form|crispy}}
+        <!--{{form|crispy}}-->
         <input type="submit" value="Submit" class="btn btn-primary"/>
     </form>
 
@@ -53,7 +52,25 @@
             document.querySelector("#here").innerHTML = text
         }
 
+
+        function getLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition);
+                } else {
+                    alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            document.querySelector("input[name=lat]").value = (position.coords.latitude).toFixed(6);
+            document.querySelector("input[name=lon]").value = (position.coords.longitude).toFixed(6);
+            alert(`Coords are: ${(position.coords.latitude).toFixed(6)}  ${(position.coords.longitude).toFixed(6)}`);
+        }
+
+
+
         document.addEventListener("DOMContentLoaded", function() {
+            getLocation()
             document.querySelectorAll('input[type=checkbox]').forEach(check => {
                 check.checked = false;
                 check.addEventListener("change", function() {
@@ -62,5 +79,7 @@
             });
             
         })
+
+
     </script>
 {% endblock %}

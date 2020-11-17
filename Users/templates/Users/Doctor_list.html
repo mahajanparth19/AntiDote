@@ -2,12 +2,20 @@
 {% load crispy_forms_tags %}
 {% block body %}
     <br><br>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
     <h1 class="heading">Choose Doctor</h1>
     {% for doc in Docs %}
         <a href="{% url 'Add_doc' id doc.id %}">{{doc.Name}} <br>
             {{ doc.Address }} <br>
             {{ doc.Qualification }}<br>
             {{ doc.contact }} <br>
+            <br><br>
         </a>
     {% endfor %}
 {% endblock %}

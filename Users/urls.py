@@ -33,6 +33,10 @@ urlpatterns = [
     path("create_Treat",views.create_Treat,name="create_Treat"),
     path("Add_doc/<int:T_id>/<int:D_id>",views.Add_doc,name="Add_doc"),
 
-
     path("base",views.base, name = "base"),
+    path("Add_Question/<int:nums>/",views.Add_Question,name="Add_Question"),
+    path("Add_Answer/<int:nums>/<int:Q_id>",views.Add_Answer,name="Add_Answer"),
+    path("delete_Question/<int:nums>/",views.delete_Question,name="delete_Question"),
+    path("Add_Appointment/<int:nums>/",views.Add_Appointment,name="Add_Appointment"),
+
 ]
