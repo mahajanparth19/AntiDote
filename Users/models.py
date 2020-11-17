@@ -26,11 +26,16 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 class Patient(models.Model):
+    GENDER_CHOICES =( 
+        ("Female", "F"), 
+        ("Male", "M"), 
+        ("Others", "Others"), 
+    ) 
     user = models.OneToOneField(User, on_delete=models.CASCADE,related_name="Patient")
     Name = models.CharField(max_length=80,default = None,null=True)
     Age = models.IntegerField(default = None,null=True)
     Address = models.TextField(max_length=300,null=True)
-    Gender = models.CharField(max_length=30,null=True)
+    Gender = models.CharField(max_length=30,choices = GENDER_CHOICES,default = 'F',null=True)
 
     def __str__(self):
         return self.Name
@@ -43,11 +48,16 @@ class Specialization(models.Model):
         return self.Name
 
 class Doctor(models.Model):
+    GENDER_CHOICES =( 
+        ("Female", "F"), 
+        ("Male", "M"), 
+        ("Others", "Others"), 
+    ) 
     user = models.OneToOneField(User, on_delete=models.CASCADE,related_name="Doctor")
     Name = models.CharField(max_length=80,default = None,null=True)
     Age = models.IntegerField(default = None,null=True)
     Address = models.TextField(max_length=300,null=True)
-    Gender = models.CharField(max_length=30,null=True)
+    Gender = models.CharField(max_length=30,choices = GENDER_CHOICES,default = 'F',null=True)
     Specialization = models.ForeignKey(Specialization,on_delete=models.PROTECT,related_name="Doctors")
     contact  = models.IntegerField(null=True)
     Qualification = models.CharField(max_length=30,null=True)
