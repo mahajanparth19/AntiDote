@@ -1,14 +1,15 @@
 {% extends "Users/layout.html" %}
 {% load crispy_forms_tags %}
 {% block body %}
-    <br><br>
+    
+<br><br>
     <h1 class="heading">Edit Profile</h1>
     <a href="{% url 'Change_Password' %}">Change Password</a>
 
     <br><br>
 
     {% if user.is_doctor %}
-    <button class="btn btn-primary">Update Location</button>
+    <button class="btn btn-primary" id="update">Update Location</button>
 
     <script>
         function getLocation() {
@@ -26,7 +27,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function(){
-           document.querySelector("button").addEventListener("click", function (){
+           document.querySelector("#update").addEventListener("click", function (){
                getLocation()
            })
         })
@@ -41,16 +42,6 @@
         <input type="submit" value="Save Changes" class="btn btn-primary"/>
     </form>
 
-   <!--  <h1 class="heading">Edit Profile</h1>
-    <br><br>
-        <a href="{% url 'Change_Password' %}">Change Password</a>
-        <br>
-        <br>
-        <form action="", method="POST">
-            {% csrf_token %}
-            {{form|crispy}}
-            <input type="submit" value="Save Changes" class="btn btn-primary"/>
-        </form> -->
         {% if message %}
             <script>alert("{{ message }}")</script>
         {% endif %}
