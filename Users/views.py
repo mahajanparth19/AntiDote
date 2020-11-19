@@ -695,23 +695,23 @@ def describe_prescription(request):
 def mydisease(df):
     try:
         y_pred=[]
-        print("1")
+        # print("1")
         mdl_mnb = joblib.load('Users/disease_mnb.pkl')
-        print("2")
+        # print("2")
         mdl_log = joblib.load('Users/disease_log.pkl')
         # print("3")
-        # mdl_ran = joblib.load('Users/disease_ran.pkl')
+        mdl_ran = joblib.load('Users/disease_ran.pkl')
         # print("4")
-        # mdl_dt = joblib.load('Users/disease_dt.pkl')
+        mdl_dt = joblib.load('Users/disease_dt.pkl')
         # print("5")
         p1=mdl_mnb.predict(df.iloc[:, :132])
         p2=mdl_log.predict(df.iloc[:, :132])
-        # p3=mdl_ran.predict(df.iloc[:, :132])
-        # p4=mdl_dt.predict(df.iloc[:, :132])
+        p3=mdl_ran.predict(df.iloc[:, :132])
+        p4=mdl_dt.predict(df.iloc[:, :132])
         y_pred.append(p1[0])
         y_pred.append(p2[0])
-        # y_pred.append(p3[0])
-        # y_pred.append(p4[0])
+        y_pred.append(p3[0])
+        y_pred.append(p4[0])
         c=Counter(y_pred)
         max=0
         idx=0
