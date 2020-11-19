@@ -54,17 +54,17 @@
     <ul class="navbar-nav mr-auto">
 
             <li class="nav-item">
-        <a class="nav-link" href="#">Predictions</a>
+        <a class="nav-link" href="{% url 'describe_prediction' %}">Predictions</a>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" href="#">Doctors</a>
+        <a class="nav-link" href="{% url 'describe_doctor' %}">Doctors</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Reports</a>
+        <a class="nav-link" href="{% url 'describe_report' %}">Reports</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Prescriptions</a>
+        <a class="nav-link" href="{% url 'describe_prescription' %}">Prescriptions</a>
       </li>
       
 
@@ -79,7 +79,7 @@
             <div class="container">
               <h1 class="display-1">Antidote </h1>
               <p>Antidote is basically a disease prediction and patient management system.Due to COVID-19,people are reluctant to visit hospitals and also hospitals too have closed-out patient wards for treatment.Apart from this, health officials and the government have continuously been advising the general public to avoid visiting the hospitals except for emergencies, resulting in these fears being compounded.</p>
-              <p><a class="btn btn-primary btn-lg" href="#" role="button">About us  &raquo;</a></p>
+              <p><a class="btn btn-primary btn-lg" href="{% url 'about' %}" role="button">About us  &raquo;</a></p>
             </div>
           </div>
 

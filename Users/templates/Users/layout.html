@@ -43,8 +43,8 @@
     </style>
     <!-- Custom styles for this template -->
     <link href="{% static 'users2/jumbotron.css' %}" rel="stylesheet">
+    <link href="{% static 'Users/styles.css' %}" rel="stylesheet">
  
-   
   </head>
   
   <body>
@@ -99,9 +99,22 @@
       
       {% else %}
 
-      <li class="nav-item">
+<!--       <li class="nav-item">
         <a class="nav-link" href="{% url 'reg' %}">Register</a>
+      </li> -->
+       <li class="nav-item">
+        <a class="nav-link" href="describe_prediction">Predictions</a>
       </li>
+       <li class="nav-item">
+        <a class="nav-link" href="#">Doctors</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Reports</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Prescriptions</a>
+      </li>
+
       <li class="nav-item">
         <a class="nav-link" href="{% url 'login' %}">Login</a>
       </li>
