@@ -12,6 +12,7 @@
     <br><br>
 
     {% for file in lastfile %}
+    <hr>
     <a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank">{{ file.name }}</a>
     <form method="POST" action="{% url 'send' file.id %}">
         {% csrf_token %}
@@ -21,6 +22,7 @@
         {% endfor %}
         <input type="submit" value="Send" class="btn btn-primary"/>
     </form>
+    <a href="{% url 'delete_report' file.id %}">Delete Report</a><br><br>
     {% endfor %}
     <br><br>
     </p>

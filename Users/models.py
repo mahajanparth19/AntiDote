@@ -3,7 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 from .managers import CustomUserManager
 from .validators import validate_date
@@ -67,9 +68,6 @@ class Doctor(models.Model):
     def __str__(self):
         return self.Name
 
-
-from django.db import models
-
 class Reports(models.Model):
     name= models.CharField(max_length=100)
     Description = models.CharField(max_length=500)
@@ -78,6 +76,10 @@ class Reports(models.Model):
     Doctors = models.ManyToManyField(Doctor,related_name="Reports",blank=True)
     def __str__(self):
         return self.name + ": " + str(self.filepath)
+
+@receiver(post_delete, sender=Reports)
+def submission_delete(sender, instance, **kwargs):
+    instance.filepath.delete(False) 
 
 class Disease(models.Model):
     Name = models.CharField(max_length=100,null=True,blank=True,default = None)

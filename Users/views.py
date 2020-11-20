@@ -311,6 +311,15 @@ def delete_Treat(request, nums):
     t.delete()
     return HttpResponseRedirect(reverse("View_Treatment"))
 
+@login_required()
+def delete_report(request, nums):
+    rep = Reports.objects.get(pk=nums)
+    if rep.Patient != request.user.Patient:
+        return HttpResponseRedirect(reverse("reports"))
+
+    rep.delete()
+    return HttpResponseRedirect(reverse("reports"))
+
 
 @login_required()
 def Complete_Treat(request, nums):

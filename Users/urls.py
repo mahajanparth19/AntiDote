@@ -45,5 +45,7 @@ urlpatterns = [
     path("Add_Answer/<int:nums>/<int:Q_id>",views.Add_Answer,name="Add_Answer"),
     path("delete_Question/<int:nums>/",views.delete_Question,name="delete_Question"),
     path("Add_Appointment/<int:nums>/",views.Add_Appointment,name="Add_Appointment"),
+    path("delete_report/<int:nums>/",views.delete_report,name="delete_report"),
+    
 
 ]
