@@ -42,7 +42,7 @@
         <a class="nav-link" href="{% url 'ActiveTreat' %}">Active Patients</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="New Requests">New Requests</a>
+        <a class="nav-link" href="{% url 'NewTreat' %}">New Requests</a>
       </li>
 
       {% endif %}
@@ -74,9 +74,9 @@
 <br>
 
 <div class="container">
-<div class="card">
+<div class="card" style="width: 50rem;">
   <div class="card-header">
-    Name
+    <strong>Name</strong>
   </div>
   <div class="card-body">
     <blockquote class="blockquote mb-0">
@@ -92,9 +92,9 @@
 <br>
 
 <div class="container">
-<div class="card">
+<div class="card" style="width: 50rem;">
   <div class="card-header">
-    E-mail
+    <strong>E-mail</strong>
   </div>
   <div class="card-body">
     <blockquote class="blockquote mb-0">
@@ -110,9 +110,9 @@
 <br>
 
 <div class="container">
-<div class="card">
+<div class="card" style="width: 50rem;">
   <div class="card-header">
-    Age
+    <strong>Age</strong>
   </div>
   <div class="card-body">
     <blockquote class="blockquote mb-0">
@@ -128,9 +128,9 @@
 <br>
 
 <div class="container">
-<div class="card">
+<div class="card" style="width: 50rem;">
   <div class="card-header">
-    Gender
+    <strong>Gender</strong>
   </div>
   <div class="card-body">
     <blockquote class="blockquote mb-0">
@@ -146,9 +146,9 @@
 <br>
 
 <div class="container">
-<div class="card">
+<div class="card" style="width: 50rem;">
   <div class="card-header">
-    Address
+    <strong>Address</strong>
   </div>
   <div class="card-body">
     <blockquote class="blockquote mb-0">
@@ -165,9 +165,9 @@
 
  {% if user.is_doctor %}
 <div class="container">
-<div class="card">
+<div class="card" style="width: 50rem;">
   <div class="card-header">
-    Specialization
+    <strong>Specialization</strong>
   </div>
   <div class="card-body">
     <blockquote class="blockquote mb-0">
@@ -179,9 +179,9 @@
 <br>
 
 <div class="container">
-<div class="card">
+<div class="card" style="width: 50rem;">
   <div class="card-header">
-    Qualification
+   <strong>Qualification</strong>
   </div>
   <div class="card-body">
     <blockquote class="blockquote mb-0">
@@ -193,9 +193,9 @@
 <br>
 
 <div class="container">
-<div class="card">
+<div class="card" style="width: 50rem;">
   <div class="card-header">
-    Contact
+    <strong>Contact</strong>
   </div>
   <div class="card-body">
     <blockquote class="blockquote mb-0">

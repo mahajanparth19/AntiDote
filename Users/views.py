@@ -675,14 +675,35 @@ def activate(request, uidb64, token):
 def base(request):
     return render(request,'Users/base.html')
 
+def about(request):
+    return render(request,'Users/about.html')
+
+def describe_prediction(request):
+    return render(request,'Users/describe_prediction.html')
+
+def describe_doctor(request):
+    return render(request,'Users/describe_doctor.html')
+
+def describe_report(request):
+    return render(request,'Users/describe_report.html')
+
+def describe_prescription(request):
+    return render(request,'Users/describe_prescription.html')
+
+
 # @api_view(["POST"])
 def mydisease(df):
     try:
         y_pred=[]
+        # print("1")
         mdl_mnb = joblib.load('Users/disease_mnb.pkl')
+        # print("2")
         mdl_log = joblib.load('Users/disease_log.pkl')
+        # print("3")
         mdl_ran = joblib.load('Users/disease_ran.pkl')
+        # print("4")
         mdl_dt = joblib.load('Users/disease_dt.pkl')
+        # print("5")
         p1=mdl_mnb.predict(df.iloc[:, :132])
         p2=mdl_log.predict(df.iloc[:, :132])
         p3=mdl_ran.predict(df.iloc[:, :132])
@@ -700,10 +721,10 @@ def mydisease(df):
                 max=itr[1]
                 idx=itr[0]
         if (max==2 and len(c)==2) or max==1:
-            return(p4[0])
+            print(idx)
+            return(p2[0])
         else:
             return idx
     except ValueError as e:
+        print(e)
         return Response(e.args[0], status.HTTP_400_BAD_REQUEST)
-
-

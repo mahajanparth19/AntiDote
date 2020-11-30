@@ -34,6 +34,13 @@ urlpatterns = [
     path("Add_doc/<int:T_id>/<int:D_id>",views.Add_doc,name="Add_doc"),
 
     path("base",views.base, name = "base"),
+     path("about",views.about, name = "about"),
+    path("describe_prediction",views.describe_prediction, name = "describe_prediction"),
+    path("describe_doctor",views.describe_doctor, name = "describe_doctor"),
+    path("describe_report",views.describe_report, name = "describe_report"),
+    path("describe_prescription",views.describe_prescription, name = "describe_prescription"),
+
+
     path("Add_Question/<int:nums>/",views.Add_Question,name="Add_Question"),
     path("Add_Answer/<int:nums>/<int:Q_id>",views.Add_Answer,name="Add_Answer"),
     path("delete_Question/<int:nums>/",views.delete_Question,name="delete_Question"),
