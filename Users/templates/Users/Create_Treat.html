@@ -22,6 +22,7 @@
 
     <script>
         var checklist = []
+        var f = 0;
         function func(check){            
             if(check.checked){
                 name = (document.querySelector(`label[for=${check.id}]`).innerHTML).trim()
@@ -54,10 +55,13 @@
             text = text + "</ul>"
             document.querySelector("#here").innerHTML = text
 
-            if(checklist.length > 0){
+            if(checklist.length > 0 && f==0){
                 document.querySelector("#su").disabled = false;
             }
             else{
+                if(f != 0){
+                    alert("Cannot Submit Until Permssion is given");
+                }
                 document.querySelector("#su").disabled = true;
             }
         }
@@ -65,10 +69,16 @@
 
         function getLocation() {
                 if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(showPosition);
+                    navigator.geolocation.getCurrentPosition(showPosition,failed);
                 } else {
                     alert("Geolocation is not supported by this browser.");
+                    f = 1;
             }
+        }
+
+        function failed(){
+            alert("Please give permission to use location and refresh website");
+            f = 1;
         }
 
         function showPosition(position) {
