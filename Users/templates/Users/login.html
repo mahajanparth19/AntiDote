@@ -72,7 +72,7 @@
     <div class="col-12">
            {{ login.password|as_crispy_field}}
         </div>
-
+        {% if message %} {{ message }} {% endif %}
         <input type="hidden" name="next" value="{{ next }}" />
        <input class="btn btn-primary" type="submit" value="Login">
        <br><br>

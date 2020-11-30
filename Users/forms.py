@@ -43,7 +43,7 @@ class LoginUserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
     class Meta:
         model = User
-        fields = ['email','password'] 
+        fields = ['email','password']
 
 class RegisterUserForm(forms.ModelForm):
     password1 = forms.CharField(widget=forms.PasswordInput(),validators=[validate_password]) #uncomment when using password validation

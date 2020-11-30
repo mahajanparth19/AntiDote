@@ -516,6 +516,7 @@ def login_view(request):
         email = log.data.get("email").lower()
         password = log.data.get("password")
         user = authenticate(request, email=email, password=password)
+        print(user)
 
         # Check if authentication successful
         if user is not None:

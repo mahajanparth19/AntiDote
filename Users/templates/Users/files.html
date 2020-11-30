@@ -20,7 +20,11 @@
             <input type="checkbox" class = "{{ file.name }}" name="file_{{file.id}}" value="{{val}}" >
             <label >{{text}} </label><br>
         {% endfor %}
+        {% if Send.Doctors.field.choices|length > 0 %}
         <input type="submit" value="Send" class="btn btn-primary"/>
+        {% else %}
+        Add Treatments to be able to send Files
+        {% endif %}
     </form>
     <a href="{% url 'delete_report' file.id %}">Delete Report</a><br><br>
     {% endfor %}
