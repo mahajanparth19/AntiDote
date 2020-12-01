@@ -4,6 +4,7 @@ from .models import User,Reports,Treatment,Doctor,Patient,Symptom, QnA
 from bootstrap_modal_forms.mixins import PopRequestMixin, CreateUpdateAjaxMixin
 from django.contrib.auth.password_validation import validate_password
 from django.core import validators
+from crispy_forms.helper import FormHelper
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -44,6 +45,13 @@ class LoginUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['email','password']
+    
+    def __init__(self, *args, **kwargs):
+        super(LoginUserForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper(self)
+        self.helper.form_show_errors = False
+        
 
 class RegisterUserForm(forms.ModelForm):
     password1 = forms.CharField(widget=forms.PasswordInput(),validators=[validate_password]) #uncomment when using password validation
