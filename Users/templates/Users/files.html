@@ -2,6 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% block body %}
+
     <h1>Upload Files</h1>
     <form enctype="multipart/form-data" method="POST" action="">
     {% csrf_token %}
@@ -11,20 +12,56 @@
 
     <br><br>
 
-    {% for file in lastfile %}
-    <a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank">{{ file.name }}</a>
+ <h1>Already Uploaded Files:</h1>
+ <div class="row">
+ {% for file in lastfile %}
+
+<div class="col-sm-6">
+    <br>
+<div class="card">
+  <h5 class="card-header"><strong>Name: </strong><a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank"> {{ file.name }}</a></h5>
+  <div class="card-body">
+    <h5 class="card-title"><strong>Description: </strong>{{ file.Description }}</h5>
+    <br>
     <form method="POST" action="{% url 'send' file.id %}">
         {% csrf_token %}
         {% for val,text in Send.Doctors.field.choices %}
             <input type="checkbox" class = "{{ file.name }}" name="file_{{file.id}}" value="{{val}}" >
-            <label >{{text}} </label><br>
+            <label > {{text}} </label>
         {% endfor %}
-        <input type="submit" value="Send" class="btn btn-primary"/>
+        <br>
+        <input type="submit" value="Send" class="btn btn-primary "/>
     </form>
+    <br>
+  </div>
+</div>
+</div>
+<br>
+{% endfor %}
+<br>
+</div>
+
+<!--     <h1>Already Uploaded Files:</h1>
+ 
+    {% for file in lastfile %}
+
+    <a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank"><strong>{{ file.name }}</strong></a>
+    <p>{{ file.Description }}</p>
+
+    <form method="POST" action="{% url 'send' file.id %}">
+        {% csrf_token %}
+        {% for val,text in Send.Doctors.field.choices %}
+            <input type="checkbox" class = "{{ file.name }}" name="file_{{file.id}}" value="{{val}}" >
+            <label > {{text}} </label>
+        {% endfor %}
+        <input type="submit" value="Send" class="btn btn-primary btn-sm"/>
+    </form>
+    <br>
+
     {% endfor %}
     <br><br>
     </p>
-
+ -->
     <script>
     document.addEventListener("DOMContentLoaded", function() {
         let id_list = []
