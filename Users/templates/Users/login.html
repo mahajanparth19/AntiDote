@@ -78,8 +78,7 @@
 
   <body class="text-center">
     <form class="form-signin" action="{% url 'login' %}" method="post">
-         {% csrf_token %}
-
+      {% csrf_token %}
          {% if user.is_authenticated %}
      <a href="{% url 'base' %}">
        <img class="mb-4" src="{% static 'users2/logo.png' %}" alt="" width="72" height="72">
@@ -105,6 +104,10 @@
 </div>
 
 <br>
+    <div id="Error" class="text-danger">
+      {% if message %} {{ message }} {% endif %}
+      <br>
+    </div>
     <div class="col-12">
             {{ login.email|as_crispy_field}}
         </div>
@@ -112,7 +115,6 @@
     <div class="col-12">
            {{ login.password|as_crispy_field}}
         </div>
-
         <input type="hidden" name="next" value="{{ next }}" />
        <input class="btn btn-primary" type="submit" value="Login">
        <br><br>

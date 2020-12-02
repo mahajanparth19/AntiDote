@@ -31,7 +31,7 @@
         </div>
         
 <br>
-        <input class="btn btn-primary" type="submit" value="Register" class="btn btn-primary">
+        <input class="btn btn-primary" id="su" type="submit" value="Register" class="btn btn-primary">
 
 </div>
 <br>
@@ -45,7 +45,8 @@
                 document.querySelector('form').action = "{% url 'register' %}"
             else{
                     document.querySelector('form').action = "{% url 'registerDoctor' %}"
-                    getLocation()    
+                    getLocation()
+                    document.querySelector("#su").disabled = true;    
                 }             
 
             fetch(`rform/${id}`)
@@ -58,7 +59,6 @@
             document.querySelectorAll('.radio').forEach(function(radio){
                 if(radio.checked == true && radio.dataset.value != 1){
                     showForm(radio.dataset.value)
-                    getLocation()
                 }
                 radio.onclick = function(){
                         console.log(this.dataset.value)
@@ -67,19 +67,26 @@
                 }
             })
         })
+
         
         function getLocation() {
                 if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(showPosition);
+                    navigator.geolocation.getCurrentPosition(showPosition,failed);
                 } else {
                     alert("Geolocation is not supported by this browser.");
             }
+        }
+
+        function failed(){
+            alert("Please give permission to use location and refresh website");
+            f = 1;
         }
 
         function showPosition(position) {
             document.querySelector("input[name=lat]").value = (position.coords.latitude).toFixed(6);
             document.querySelector("input[name=lon]").value = (position.coords.longitude).toFixed(6);
             alert(`Coords are: ${(position.coords.latitude).toFixed(6)}  ${(position.coords.longitude).toFixed(6)}`);
+            document.querySelector("#su").disabled = false;
         }
 
     </script>

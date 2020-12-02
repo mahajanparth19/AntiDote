@@ -12,27 +12,34 @@
 
     <br><br>
 
- <h1>Already Uploaded Files:</h1>
+<h1>Already Uploaded Files:</h1>
  <div class="row">
- {% for file in lastfile %}
+  {% for file in lastfile %}
 
 <div class="col-sm-6">
     <br>
 <div class="card">
-  <h5 class="card-header"><strong>Name: </strong><a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank"> {{ file.name }}</a></h5>
+  <h5 class="card-header"><strong>Name: </strong><a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank"> {{ file.name }}</a> </h5>
   <div class="card-body">
-    <h5 class="card-title"><strong>Description: </strong>{{ file.Description }}</h5>
+    <h6 class="card-title"><strong>Description: </strong>{{ file.Description }}</h6>
     <br>
+    <p class="card-text">Select the doctor:</p>
     <form method="POST" action="{% url 'send' file.id %}">
         {% csrf_token %}
         {% for val,text in Send.Doctors.field.choices %}
             <input type="checkbox" class = "{{ file.name }}" name="file_{{file.id}}" value="{{val}}" >
-            <label > {{text}} </label>
+            <label > <strong>{{text}} &nbsp;&nbsp;&nbsp;</strong> </label>
         {% endfor %}
+    {% if Send.Doctors.field.choices|length > 0 %}
+        &nbsp;&nbsp;&nbsp;<input type="submit" value="Send" class="btn btn-primary"/>
+        {% else %}
+        Add Treatments to be able to send Files
+        {% endif %}
+        </form>
         <br>
-        <input type="submit" value="Send" class="btn btn-primary "/>
-    </form>
-    <br>
+        <a class="btn btn-primary" href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank">View Report</a>
+        <a class="btn btn-danger" href="{% url 'delete_report' file.id %}">Delete Report</a>
+        
   </div>
 </div>
 </div>
@@ -41,27 +48,35 @@
 <br>
 </div>
 
-<!--     <h1>Already Uploaded Files:</h1>
+   <!--  <h1>Already Uploaded Files:</h1>
  
     {% for file in lastfile %}
 
-    <a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank"><strong>{{ file.name }}</strong></a>
-    <p>{{ file.Description }}</p>
-
+    <a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank">{{ file.name }}</a>
+<p>{{ file.Description }}</p>
     <form method="POST" action="{% url 'send' file.id %}">
         {% csrf_token %}
         {% for val,text in Send.Doctors.field.choices %}
             <input type="checkbox" class = "{{ file.name }}" name="file_{{file.id}}" value="{{val}}" >
             <label > {{text}} </label>
         {% endfor %}
+
         <input type="submit" value="Send" class="btn btn-primary btn-sm"/>
     </form>
     <br>
 
+        {% if Send.Doctors.field.choices|length > 0 %}
+        <input type="submit" value="Send" class="btn btn-primary"/>
+        {% else %}
+        Add Treatments to be able to send Files
+        {% endif %}
+    </form>
+    <a href="{% url 'delete_report' file.id %}">Delete Report</a><br><br>
+<hr>
     {% endfor %}
     <br><br>
-    </p>
- -->
+    </p> -->
+
     <script>
     document.addEventListener("DOMContentLoaded", function() {
         let id_list = []

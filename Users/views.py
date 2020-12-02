@@ -311,6 +311,15 @@ def delete_Treat(request, nums):
     t.delete()
     return HttpResponseRedirect(reverse("View_Treatment"))
 
+@login_required()
+def delete_report(request, nums):
+    rep = Reports.objects.get(pk=nums)
+    if rep.Patient != request.user.Patient:
+        return HttpResponseRedirect(reverse("reports"))
+
+    rep.delete()
+    return HttpResponseRedirect(reverse("reports"))
+
 
 @login_required()
 def Complete_Treat(request, nums):
@@ -507,6 +516,7 @@ def login_view(request):
         email = log.data.get("email").lower()
         password = log.data.get("password")
         user = authenticate(request, email=email, password=password)
+        print(user)
 
         # Check if authentication successful
         if user is not None:
@@ -695,13 +705,13 @@ def describe_prescription(request):
 def mydisease(df):
     try:
         y_pred=[]
-        print("1")
+        # print("1")
         mdl_mnb = joblib.load('Users/disease_mnb.pkl')
-        print("2")
+        # print("2")
         mdl_log = joblib.load('Users/disease_log.pkl')
         # print("3")
         # mdl_ran = joblib.load('Users/disease_ran.pkl')
-        # print("4")
+        # # print("4")
         # mdl_dt = joblib.load('Users/disease_dt.pkl')
         # print("5")
         p1=mdl_mnb.predict(df.iloc[:, :132])

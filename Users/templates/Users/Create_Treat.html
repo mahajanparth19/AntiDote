@@ -17,12 +17,13 @@
     </div>
     <br><br>
         <!--{{form|crispy}}-->
-        <input type="submit" value="Submit" class="btn btn-primary"/>
+        <input type="submit" id="su" value="Predict" class="btn btn-primary"/>
     </form>
 
     <script>
         var checklist = []
-        function func(check){
+        var f = 0;
+        function func(check){            
             if(check.checked){
                 name = (document.querySelector(`label[for=${check.id}]`).innerHTML).trim()
                 if(checklist.length == 5){
@@ -53,15 +54,31 @@
             }
             text = text + "</ul>"
             document.querySelector("#here").innerHTML = text
+
+            if(checklist.length > 0 && f==0){
+                document.querySelector("#su").disabled = false;
+            }
+            else{
+                if(f != 0){
+                    alert("Cannot Submit Until Permssion is given");
+                }
+                document.querySelector("#su").disabled = true;
+            }
         }
 
 
         function getLocation() {
                 if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(showPosition);
+                    navigator.geolocation.getCurrentPosition(showPosition,failed);
                 } else {
                     alert("Geolocation is not supported by this browser.");
+                    f = 1;
             }
+        }
+
+        function failed(){
+            alert("Please give permission to use location and refresh website");
+            f = 1;
         }
 
         function showPosition(position) {
@@ -73,6 +90,7 @@
 
 
         document.addEventListener("DOMContentLoaded", function() {
+            document.querySelector("#su").disabled = true;
             getLocation()
             document.querySelectorAll('input[type=checkbox]').forEach(check => {
                 check.checked = false;
