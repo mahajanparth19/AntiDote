@@ -398,7 +398,7 @@ def send(request, nums):
             if str(doc.id) not in docs:
                 d = Doctor.objects.get(pk=doc.id)
                 files.Doctors.remove(d)
-
+        messages.success(request, 'Changed sharing access Successfully')
         return HttpResponseRedirect(reverse("reports"))
 
 
@@ -516,8 +516,7 @@ def login_view(request):
         email = log.data.get("email").lower()
         password = log.data.get("password")
         user = authenticate(request, email=email, password=password)
-        print(user)
-
+    
         # Check if authentication successful
         if user is not None:
             if not user.is_active:
@@ -589,6 +588,7 @@ def register(request):
             p.save()
             current_site = get_current_site(request)
             send_email(current_site, user, p.Name)
+            logout(request)
             return render(request, "Users/confirmation.html", {
                 "message": "Confirm your email",
                 "u": user,
@@ -645,6 +645,7 @@ def register_Doctor(request):
             d.save()
             current_site = get_current_site(request)
             send_email(current_site, user, d.Name)
+            logout(request)
             return render(request, "Users/confirmation.html", {
                 "message": "Confirm your email",
                 "u": user,

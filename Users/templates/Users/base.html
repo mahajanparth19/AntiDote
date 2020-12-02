@@ -81,9 +81,9 @@
   <div class="card-body">
     <blockquote class="blockquote mb-0">
       {% if user.is_patient %}
-      <p>{{ user.Patient.Name }}</p>
+      <p>{{ user.Patient.Name.capitalize }}</p>
       {% elif user.is_doctor %}
-      <p>{{ user.Doctor.Name }}</p>
+      <p>{{ user.Doctor.Name.capitalize }}</p>
     </blockquote>
     {% endif %}
   </div>
@@ -99,9 +99,9 @@
   <div class="card-body">
     <blockquote class="blockquote mb-0">
       {% if user.is_patient %}
-      <p>{{ user.email }}</p>
+      <p>{{ user.email.capitalize }}</p>
       {% elif user.is_doctor %}
-      <p>{{ user.email }}</p>
+      <p>{{ user.email.capitalize }}</p>
     </blockquote>
     {% endif %}
   </div>
