@@ -3,7 +3,7 @@
 
 {% block body %}
 
-    <h1>Upload Files</h1>
+    <h3 class="heading">Upload Files</h3>
     <form enctype="multipart/form-data" method="POST" action="">
     {% csrf_token %}
     {{ form|crispy }}
@@ -12,7 +12,7 @@
 
     <br><br>
 
-<h1>Already Uploaded Files:</h1>
+<h3 class="heading">Already Uploaded Files:</h3>
  <div class="row">
   {% for file in lastfile %}
 
