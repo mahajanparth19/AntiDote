@@ -520,7 +520,12 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             if not user.is_active:
-                return HttpResponse(f'Please confirm your email address to complete the registration')
+                logout(request)
+                return render(request, "Users/login.html", {
+                    "message": "Please confirm your email address to complete the registration",
+                    "next": request.POST["next"],
+                    "login": log
+                })
             login(request, user)
             link = request.POST["next"]
             if link != "None":
