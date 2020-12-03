@@ -72,6 +72,15 @@
 <br>
 <br>
 <br>
+<div style="padding-left:12vw";>
+<h1 class="heading">Antidote, <i>welcomes you!</i></h1>
+  <br></div>
+  <hr><hr>
+<br>
+<div style="padding-left:12vw";>
+<h3>Your profile:</h3>
+<br>
+</div>
 <div class="container">
 <div class="card" style="width: 50rem;">
   <div class="card-header">
@@ -80,9 +89,9 @@
   <div class="card-body">
     <blockquote class="blockquote mb-0">
       {% if user.is_patient %}
-      <p>{{ user.Patient.Name }}</p>
+      <p>{{ user.Patient.Name.capitalize }}</p>
       {% elif user.is_doctor %}
-      <p>{{ user.Doctor.Name }}</p>
+      <p>{{ user.Doctor.Name.capitalize }}</p>
     </blockquote>
     {% endif %}
   </div>
@@ -98,9 +107,9 @@
   <div class="card-body">
     <blockquote class="blockquote mb-0">
       {% if user.is_patient %}
-      <p>{{ user.email }}</p>
+      <p>{{ user.email.capitalize }}</p>
       {% elif user.is_doctor %}
-      <p>{{ user.email }}</p>
+      <p>{{ user.email.capitalize }}</p>
     </blockquote>
     {% endif %}
   </div>
@@ -154,7 +163,7 @@
       {% if user.is_patient %}
       <p>{{ user.Patient.Address }}</p>
       {% elif user.is_doctor %}
-      <p>{{ user.Doctor.Name }}</p>
+      <p>{{ user.Doctor.Address }}</p>
     </blockquote>
     {% endif %}
   </div>

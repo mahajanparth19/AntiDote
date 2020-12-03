@@ -2,8 +2,9 @@
 {% load crispy_forms_tags %}
 
 {% block body %}
-
-    <h3 class="heading">Upload Files</h3>
+    <h2 class="heading"> <i>A track of your medical history</i></h2>
+    <hr><hr>
+    <h1>Upload Files:</h1>
     <form enctype="multipart/form-data" method="POST" action="">
     {% csrf_token %}
     {{ form|crispy }}
@@ -12,14 +13,14 @@
 
     <br><br>
 
-<h3 class="heading">Already Uploaded Files:</h3>
+<h1>Already Uploaded Files:</h1>
  <div class="row">
   {% for file in lastfile %}
 
 <div class="col-sm-6">
     <br>
 <div class="card">
-  <h5 class="card-header"><strong>Name: </strong><a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank"> {{ file.name }}</a> </h5>
+  <h5 class="card-header"><strong>Name of the report: </strong><a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank"> {{ file.name }}</a> </h5>
   <div class="card-body">
     <h6 class="card-title"><strong>Description: </strong>{{ file.Description }}</h6>
     <br>
@@ -97,6 +98,10 @@
 
     })
     </script>
+
+    {% for message in messages %}
+    <script>alert("{{ message }}")</script>
+    {% endfor %}
 
 {% endblock %}
 
