@@ -163,7 +163,7 @@
       {% if user.is_patient %}
       <p>{{ user.Patient.Address }}</p>
       {% elif user.is_doctor %}
-      <p>{{ user.Doctor.Name }}</p>
+      <p>{{ user.Doctor.Address }}</p>
     </blockquote>
     {% endif %}
   </div>
