@@ -4,11 +4,12 @@
     
 <br>
     <h1 class="heading">Edit Profile</h1>
-    <a href="{% url 'Change_Password' %}">Change Password</a>
+    <a href="{% url 'Change_Password' %}"><u> <strong>Change Password </strong></u></a>
 <br>
     {% if user.is_doctor %}
+    <br>
     <button class="btn btn-primary" id="update">Update Location</button>
-
+<br>
     <script>
         function getLocation() {
                 if (navigator.geolocation) {
