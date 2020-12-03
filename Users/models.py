@@ -96,7 +96,7 @@ class Symptom(models.Model):
 
 class Treatment(models.Model):
     Patient = models.ForeignKey(Patient,on_delete=models.CASCADE,related_name="Treatments")
-    Doctor = models.ForeignKey(Doctor,related_name="Treatments",null=True,on_delete=models.SET_NULL)
+    Doctor = models.ForeignKey(Doctor,related_name="Treatments",null=True,on_delete=models.SET_NULL,default=None,blank=True)
     is_active = models.BooleanField(default=False)
     is_new = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)

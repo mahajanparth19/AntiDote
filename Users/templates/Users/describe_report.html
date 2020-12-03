@@ -49,7 +49,7 @@
         <a class="nav-link" href="{% url 'describe_doctor' %}">Doctors</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'describe_prediction' %}">Prescriptions</a>
+        <a class="nav-link" href="{% url 'describe_prescription' %}">Prescriptions</a>
       </li>
      <li class="nav-item">
         <a class="nav-link" href="{% url 'login' %}">Login</a>
@@ -77,28 +77,28 @@
         <!-- Title -->
         <h1 class="mt-4">Reports</h1>
 
-        <!-- Preview Image -->
-        <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
+        <!-- Preview Image --><br>
+        <img class="" src="{% static 'Users/reportimg.jpg' %}" width="900" height="500" alt="">
 
         <hr>
 
         <!-- Post Content -->
-        <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus, vero, obcaecati, aut, error quam sapiente nemo saepe quibusdam sit excepturi nam quia corporis eligendi eos magni recusandae laborum minus inventore?</p>
+        <p>This feature will help the patient to upload their medical reports.It will help to overcome the the challenges faced by the people to keep a record of all their previous reports as manually keeping record of all medical reports can be a cumbersome process for many people.There are some diseases which require constant track of previous medical reports as doctor needs to see whole medical background of that person.The best example of this is diabetes,as for prescribing any medicine, doctor also needs to know what were the results of the previous test. Therefore, developing a feature to store previous reports will make the life of users easy and comfortable.This feature is not compulsory for every user to access, it’s an optional feature provided to users for their comfort.</p>
 
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut, tenetur natus doloremque laborum quos iste ipsum rerum obcaecati impedit odit illo dolorum ab tempora nihil dicta earum fugiat. Temporibus, voluptatibus.</p>
 
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos, doloribus, dolorem iusto blanditiis unde eius illum consequuntur neque dicta incidunt ullam ea hic porro optio ratione repellat perspiciatis. Enim, iure!</p>
+
+
 
         <blockquote class="blockquote">
-          <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-          <footer class="blockquote-footer">Someone famous in
-            <cite title="Source Title">Source Title</cite>
-          </footer>
+          <p class="mb-0"><u>Steps to upload reports: </u></p>
         </blockquote>
-
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error, nostrum, aliquid, animi, ut quas placeat totam sunt tempora commodi nihil ullam alias modi dicta saepe minima ab quo voluptatem obcaecati?</p>
-
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum, dolor quis. Sunt, ut, explicabo, aliquam tenetur ratione tempore quidem voluptates cupiditate voluptas illo saepe quaerat numquam recusandae? Qui, necessitatibus, est!</p>
+<p>
+  <li>After logging into the portal, the patient will have to navigate to the Reports tab which requires the patient to upload his reports.</li>
+<li>The GUI of this section would provide the patient to select from where he wants to upload his reports like from his device, from dropbox or from google drive.</li>
+<li>Then the patient will select the particular report which he wants to upload.</li>
+<li>Patient also need to name this report and also provide a brief description.</li>
+<li>If patient wants to send the report to doctor, he/she can simply send it by selecting the doctor and clicking on send button.</li>
+<li>The patient also has a choice to delete the report.</li>
 
         <hr>
 
