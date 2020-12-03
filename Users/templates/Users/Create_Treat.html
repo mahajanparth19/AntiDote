@@ -1,8 +1,9 @@
 {% extends "Users/layout.html" %}
 {% load crispy_forms_tags %}
 {% block body %}
-
-    
+    <h1 class="heading">Predict Disease</h1>
+    <hr>
+    <h1>Select your symptoms:</h1><h3>(minimum one)</h3><br>
     <div style=" height: 32vmax ;">
         <div style="width: 80vh ; float: left; overflow-y : scroll ; height: 100%;">
             <form action="", method="POST">
@@ -11,7 +12,7 @@
         </div>
 
         <div>
-            <h3>Selected Symptoms</h3>
+            <h3> Your Selected Symptoms:</h3>
             <div id="here" ></div>
         </div>
     </div>
