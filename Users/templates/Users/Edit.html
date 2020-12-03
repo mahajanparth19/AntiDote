@@ -4,11 +4,11 @@
     
 <br>
     <h1 class="heading">Edit Profile</h1>
-    <a href="{% url 'Change_Password' %}"><u> <strong>Change Password </strong></u></a>
-<br>
+    <span>
+    <button class="btn btn-primary" id="changepass"><a href="{% url 'Change_Password' %}" style="color: white">Change Password</a></button>
     {% if user.is_doctor %}
-    <br>
     <button class="btn btn-primary" id="update">Update Location</button>
+    </span>
 <br>
     <script>
         function getLocation() {
