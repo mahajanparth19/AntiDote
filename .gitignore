@@ -1,2 +1,2 @@
-.pyc
-imp.py
+*.pyc
+Hospital/imp.py
