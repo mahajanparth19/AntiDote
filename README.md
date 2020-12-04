@@ -16,3 +16,15 @@ Question and Answer(QnA)<br>
 This would reduce the chances of disease transmission and would also be convenient for both the patient and the doctor especially residing in high alert areas. This would also help to overcome the problem of deficiency of human resources in the health sector which is prevalent at several levels such as between regions, between rural and urban areas and between private and public sectors. This challenge is solved by providing the feature that doctors throughout the country can sign up at our portal thus providing the benefit of consulting the health care specialists in the respective fields and bridging the gap between different sections of the society. 
 
 
+#Usage:
+Clone this repo
+The inside the Hospital folder create an imp.py file having a class named secrets with the variables:
+<li> SECRET_KEY 
+<li> EMAIL_HOST_USER 
+<li> EMAIL_HOST_PASSWORD 
+ 
+ Structure of file should be
+ class secrets: 
+    SECRET_KEY = 'your production key'
+    EMAIL_HOST_USER = 'your email'
+    EMAIL_HOST_PASSWORD = 'your password'
