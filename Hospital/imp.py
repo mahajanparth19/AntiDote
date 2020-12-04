@@ -4,3 +4,5 @@ class secrets:
     EMAIL_HOST_USER = 'antidotenoreply@gmail.com'
     EMAIL_HOST_PASSWORD = 'mAC9QM6Wp9vdTdm'
 
+
+
