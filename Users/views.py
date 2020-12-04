@@ -153,7 +153,7 @@ def Doctor_list(request, nums):
     Docs = sort_lat(Docs, (tr.lat, tr.lon))
     for doc in Docs:
         print(doc.Name)
-    return render(request, "USers/Doctor_list.html", {
+    return render(request, "Users/Doctor_list.html", {
         "Docs": Docs,
         "tr": tr,
     })
