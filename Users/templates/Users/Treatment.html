@@ -22,25 +22,26 @@
       </div>
     </div>
 </div>
-     </div>
-    <br>
-        <div class="row">
-  <div class="col-sm-8">
-    <div class="card">
-        <h5 class="card-header"><strong>Reports</strong></h5>
-         {% if files %}
-         {% for file in files %}
-        <div class="card-body">
-        <h6 class="card-title"><strong>Name : </strong>{{ file.name }}</h6>
-        <h6 class="card-title"><strong>Description : </strong>{{file.Description}}</h6>
-        <a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank" class="btn btn-primary btn-sm">View</a>
-    </div>
-        {% endfor %}
- {% else %}
-        <div class="card-body">
-            <h6 class="card-title"><strong>No Reports Shared</strong></h6>
-             {% endif %}
 </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-8">
+        <div class="card">
+            <h5 class="card-header"><strong>Reports</strong></h5>
+            {% if files %}
+                {% for file in files %}
+                    <div class="card-body">
+                    <h6 class="card-title"><strong>Name : </strong>{{ file.name }}</h6>
+                    <h6 class="card-title"><strong>Description : </strong>{{file.Description}}</h6>
+                    <a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank" class="btn btn-primary btn-sm">View</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="card-body">
+                    <h6 class="card-title"><strong>No Reports Shared</strong></h6>
+                </div>
+            {% endif %}
+        </div>
       </div>
     </div>
 </div>

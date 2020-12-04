@@ -15,11 +15,17 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+import importlib.util
+spec = importlib.util.spec_from_file_location("imp.py", BASE_DIR+"/Hospital/imp.py")
+foo = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(foo)
+sec = foo.secrets()
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&d*1e%p*@3l&dn_zta@jsualjmia!*_1(=hyrf7a6yw$u5jz_!'
+SECRET_KEY = sec.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -132,8 +138,8 @@ LOGIN_URL = 'login'
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'Enter Email Here'
-EMAIL_HOST_PASSWORD = 'Enter Password here'
+EMAIL_HOST_USER = sec.EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = sec.EMAIL_HOST_PASSWORD
 EMAIL_PORT = 587
 
 MEDIA_ROOT= os.path.join(BASE_DIR, 'media/')
