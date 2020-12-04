@@ -2,64 +2,107 @@
 {% load crispy_forms_tags %}
 
 {% block body %}
-    {% if request.user.is_patient %}
-    <h6>Doctor : {{ Treatment.Doctor }}</h6>
-    {% else %}
-    <h6>Patient : {{ Treatment.Patient }}</h6>
-    {% endif %}
-    <h6>Disease : {{ Treatment.Disease }}</h6>
 
-    <br>
-    <h3>Symptoms</h3>
-    <ul>
+
+     <div class="row">
+  <div class="col-sm-8">
+    <div class="card">
+         {% if request.user.is_patient %}
+        <h5 class="card-header"><strong>Doctor : </strong>{{ Treatment.Doctor }}</h5>
+        {% else %}
+        <h5 class="card-header"><strong>Patient : </strong>{{ Treatment.Patient }}</h5>
+        {% endif %}
+      <div class="card-body">
+        <h6 class="card-title"><strong>Disease : </strong>{{ Treatment.Disease }}</h6>
+        <h6 class="card-title"><strong>Symptoms : </strong></h6>
+         <ul>
     {% for sym in Treatment.SymptomList.all %}
         <li>{{ sym.Name }}</li>
     {% endfor %}
-    </ul>
+      </div>
+    </div>
+</div>
+     </div>
     <br>
-    {% if files %}
-        <h3>Reports</h3>
-        {% for file in files %}
-            Name: <a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank">{{ file.name }}</a>
-            <p>Description : {{file.Description}}</p>
+        <div class="row">
+  <div class="col-sm-8">
+    <div class="card">
+        <h5 class="card-header"><strong>Reports</strong></h5>
+         {% if files %}
+         {% for file in files %}
+        <div class="card-body">
+        <h6 class="card-title"><strong>Name : </strong>{{ file.name }}</h6>
+        <h6 class="card-title"><strong>Description : </strong>{{file.Description}}</h6>
+        <a href="{{ MEDIA_URL }}{{ file.filepath }}" target="_blank" class="btn btn-primary btn-sm">View</a>
+    </div>
         {% endfor %}
-    {% else%}
-        <h5> No Reports Shared</h5>
-    {% endif %}
+ {% else %}
+        <div class="card-body">
+            <h6 class="card-title"><strong>No Reports Shared</strong></h6>
+             {% endif %}
+</div>
+      </div>
+    </div>
+</div>
+</div>
 
-    <h3>Appointments</h3>
-    {% if Treatment.Appointment %}
-        <li>{{ Treatment.Appointment }}</li>
-    {% else %}
-        <h4>No Appointment</h4>
-    {% endif %}
-    <br><br>
-    {% if request.user.is_doctor %}
+
+
+
+<div class="center">
+<div class="row">
+        <div class="col-sm-8">
+        <div class="card">
+        <h5 class="card-header"><strong>Appointment</strong></h5>
+         {% if Treatment.Appointment %}
+        <div class="card-body">
+        <h6 class="card-title"><li>Your appointment is fixed on <strong>{{ Treatment.Appointment }}</strong></li></h6>
+        {% else %}
+        <h6 class="card-title"><strong><br>&nbsp;&nbsp;&nbsp;&nbsp;No Appointment<br></strong><br></h6>
+        {% endif %}
+    </div>
+    </div>
+      </div>
+  </div>
+</div>
+
+{% if request.user.is_doctor %}
+<div class="center">
     <form action="{% url 'Add_Appointment' Treatment.id %}" method="POST">
         {% csrf_token %}
         {{Appoint_Form|crispy}}
         <input type="submit" value="Add Appointment" class="btn btn-primary">
     </form>
-    
     {% endif %}
-    
-    <br><br>
-    <h3>Prescription</h3>
-    <div id="Presc">
-    {% if Treatment.Prescription %}
-        {{ Treatment.Prescription }}
-    {% else %}
-        <h4>No Prescription</h4>
-    {% endif %}
-    
-    {% if request.user.is_doctor %}     
+</div>
+
+<div class="center">
+          <div class="row">
+        <div class="col-sm-8">
+        <div class="card">
+        <h5 class="card-header"><strong>Prescription</strong></h5>
+        <div class="card-body">
+        <div id="Presc">
+            {% if Treatment.Prescription %}
+        <h6 class="card-title"> {{ Treatment.Prescription }}</h6>
+        {% else %}
+ <h6 class="card-title">No Prescription</h6>
+{% endif %}
+
+
+{% if request.user.is_doctor %}     
         <br>
         <button id="Pbtn" data-val="{{ Treatment.id }}" class="btn btn-primary">Edit</button>
     {% endif %}
-    </div>
+  </div>
+  </div>
+</div>
+</div>
+
+</div>
 
 
-    <br><br><br>
+    <br><br><br><br>
     <hr>
     {% for question in Treatment.Questions.all %}
             Question : {{ question.Question }} <br><br>
@@ -130,4 +173,5 @@
             })
         })
     </script>
+
 {% endblock %}
