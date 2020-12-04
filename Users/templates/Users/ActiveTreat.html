@@ -9,6 +9,7 @@
     <tr>
       <th scope="col">Patient's Name</th>
       <th scope="col">Doctor's Name</th>
+      <th scope="col">Disease</th>
       <th scope="col">Treatment Id</th>
     </tr>
   </thead>
@@ -18,6 +19,7 @@
     <tr>
       <th scope="row">{{ Treat.Patient.Name }}</th>
       <td>{{ Treat.Doctor.Name }}</td>
+      <td>{{Treat.Disease}}</td>
       <td>{{Treat.id}}</td>
       <td><a href="{% url 'Treat' Treat.id %}">View Treatment</a></td>
     </tr>
