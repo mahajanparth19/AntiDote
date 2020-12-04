@@ -124,7 +124,6 @@ def create_Treat(request):
         tr.lat = f.data.get("lat")
         tr.lon = f.data.get("lon")
         tr.save()
-        messages.success(request, 'The disease predicted is {}'.format(answer))
         return HttpResponseRedirect(reverse("Doctor_list", args=[tr.id]))
 
     f = Symptoms()
