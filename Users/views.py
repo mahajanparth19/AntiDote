@@ -677,7 +677,7 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        login(request, user)
+        # login(request, user)
         # return redirect('home')
         return render(request, "Users/confirmation.html", {
             "message": "Thank you for your email confirmation. Now you can login your account."
