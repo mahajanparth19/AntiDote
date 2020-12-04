@@ -24,7 +24,9 @@ The inside the Hospital folder create an imp.py file having a class named secret
 <li> EMAIL_HOST_PASSWORD 
  
  Structure of file should be
+```python
  class secrets: 
     SECRET_KEY = 'your production key'
     EMAIL_HOST_USER = 'your email'
     EMAIL_HOST_PASSWORD = 'your password'
+```
