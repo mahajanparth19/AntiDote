@@ -28,7 +28,7 @@
     <form method="POST" action="{% url 'send' file.id %}">
         {% csrf_token %}
         {% for val,text in Send.Doctors.field.choices %}
-            <input type="checkbox" class = "{{ file.name }}" name="file_{{file.id}}" value="{{val}}" >
+            <input type="checkbox" class = "file_{{ file.id }}" name="file_{{file.id}}" value="{{val}}" >
             <label > <strong>{{text}} &nbsp;&nbsp;&nbsp;</strong> </label>
         {% endfor %}
     {% if Send.Doctors.field.choices|length > 0 %}
@@ -87,9 +87,12 @@
                 id_list.push("{{ doc.id }}")
             {% endfor%}
                 console.log(id_list)
-            document.querySelectorAll(".{{file.name}}").forEach(function(check){
+                console.log("{{file.name}}")
+            document.querySelectorAll(".file_{{file.id}}").forEach(function(check){
                 console.log(check.value)
+                console.log(id_list)
                 if(id_list.includes(check.value)){
+                    console.log("here")
                     check.checked = true
                 }
             })

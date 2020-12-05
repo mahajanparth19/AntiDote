@@ -58,6 +58,10 @@
          {% if Treatment.Appointment %}
         <div class="card-body">
         <h6 class="card-title"><li>Your appointment is fixed on <strong>{{ Treatment.Appointment }}</strong></li></h6>
+        {% if request.user.is_patient %}
+            <h6 class="card-title"><li>Doctor's Email : <strong>{{ Treatment.Doctor.user.email }}</strong></li></h6>
+            <h6 class="card-title"><li>Doctor's contact number : <strong>{{ Treatment.Doctor.contact }}</strong></li></h6>
+        {% endif %}
         {% else %}
         <h6 class="card-title"><strong><br>&nbsp;&nbsp;&nbsp;&nbsp;No Appointment<br></strong><br></h6>
         {% endif %}
