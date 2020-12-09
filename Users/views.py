@@ -124,7 +124,6 @@ def create_Treat(request):
         tr.lat = f.data.get("lat")
         tr.lon = f.data.get("lon")
         tr.save()
-        messages.success(request, 'The disease predicted is {}'.format(answer))
         return HttpResponseRedirect(reverse("Doctor_list", args=[tr.id]))
 
     f = Symptoms()
@@ -716,18 +715,18 @@ def mydisease(df):
         # print("2")
         mdl_log = joblib.load('Users/disease_log.pkl')
         # print("3")
-        # mdl_ran = joblib.load('Users/disease_ran.pkl')
+        mdl_ran = joblib.load('Users/disease_ran.pkl')
         # # print("4")
-        # mdl_dt = joblib.load('Users/disease_dt.pkl')
+        mdl_dt = joblib.load('Users/disease_dt.pkl')
         # print("5")
         p1=mdl_mnb.predict(df.iloc[:, :132])
         p2=mdl_log.predict(df.iloc[:, :132])
-        # p3=mdl_ran.predict(df.iloc[:, :132])
-        # p4=mdl_dt.predict(df.iloc[:, :132])
+        p3=mdl_ran.predict(df.iloc[:, :132])
+        p4=mdl_dt.predict(df.iloc[:, :132])
         y_pred.append(p1[0])
         y_pred.append(p2[0])
-        # y_pred.append(p3[0])
-        # y_pred.append(p4[0])
+        y_pred.append(p3[0])
+        y_pred.append(p4[0])
         c=Counter(y_pred)
         max=0
         idx=0
@@ -738,7 +737,7 @@ def mydisease(df):
                 idx=itr[0]
         if (max==2 and len(c)==2) or max==1:
             print(idx)
-            return(p2[0])
+            return(p4[0])
         else:
             return idx
     except ValueError as e:
